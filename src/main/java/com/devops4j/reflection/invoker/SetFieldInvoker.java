@@ -4,7 +4,6 @@ import com.devops4j.reflection.Invoker;
 import com.devops4j.track.ErrorContextFactory;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 
 public class SetFieldInvoker implements Invoker {
   private Field field;
@@ -13,7 +12,7 @@ public class SetFieldInvoker implements Invoker {
     this.field = field;
   }
 
-  public Object invoke(Object target, Object... args) throws IllegalAccessException, InvocationTargetException {
+  public Object invoke(Object target, Object... args) throws Exception {
     if(args.length != 1){
       ErrorContextFactory.instance().message("参数只能为1个值!").throwError();
       return null;

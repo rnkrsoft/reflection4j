@@ -3,7 +3,6 @@ package com.devops4j.reflection.invoker;
 import com.devops4j.reflection.Invoker;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 
 
 public class GetFieldInvoker implements Invoker {
@@ -13,7 +12,7 @@ public class GetFieldInvoker implements Invoker {
     this.field = field;
   }
 
-  public Object invoke(Object target, Object... args) throws IllegalAccessException, InvocationTargetException {
+  public Object invoke(Object target, Object... args) throws Exception {
     return field.get(target);
   }
 

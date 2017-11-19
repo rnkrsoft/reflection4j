@@ -1,6 +1,5 @@
 package com.devops4j.reflection;
 
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * 执行器
@@ -12,9 +11,9 @@ public interface Invoker {
      * @param args 参数数组
      * @return 执行结果
      * @throws IllegalAccessException
-     * @throws InvocationTargetException
+     * @throws Exception
      */
-    <T> T invoke(Object target, Object... args) throws IllegalAccessException, InvocationTargetException;
+    <T> T invoke(Object target, Object... args) throws Exception;
 
     /**
      * 方法返回类型

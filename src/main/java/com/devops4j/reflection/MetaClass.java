@@ -28,6 +28,12 @@ public interface MetaClass {
      * @return Setter方法列表
      */
     String[] getSetterNames();
+
+    /**
+     * 查找属性名
+     * @param name 属性名
+     * @return
+     */
     String findProperty(String name);
     /**
      * 查找属性名
