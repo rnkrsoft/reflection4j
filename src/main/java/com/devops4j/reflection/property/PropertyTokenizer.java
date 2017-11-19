@@ -42,26 +42,50 @@ public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<
         }
     }
 
+    /**
+     * 当前属性名称
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 当前属性序号
+     * @return
+     */
     public String getIndex() {
         return index;
     }
 
+    /**
+     * 当前属性名和序号
+     * @return
+     */
     public String getIndexedName() {
         return indexedName;
     }
 
+    /**
+     * 下一级属性
+     * @return
+     */
     public String getChildren() {
         return children;
     }
 
+    /**
+     * 是否还有下一级属性
+     * @return
+     */
     public boolean hasNext() {
         return children != null;
     }
 
+    /**
+     * 返回下一级属性迭代器
+     * @return
+     */
     public PropertyTokenizer next() {
         return new PropertyTokenizer(children);
     }

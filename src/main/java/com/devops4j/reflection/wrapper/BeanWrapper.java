@@ -1,8 +1,8 @@
 package com.devops4j.reflection.wrapper;
 
+import com.devops4j.reflection.*;
 import com.devops4j.reflection.factory.MetaClassFactory;
 import com.devops4j.reflection.property.PropertyTokenizer;
-import com.devops4j.reflection.*;
 import com.devops4j.track.ErrorContextFactory;
 
 import java.util.List;
@@ -97,56 +97,53 @@ public class BeanWrapper extends BaseWrapper {
     }
 
     public Class<?> getGetterType(String name) {
-//    PropertyTokenizer prop = new PropertyTokenizer(name);
-//    if (prop.hasNext()) {
-//      MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//      if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//        return metaClass.getGetterType(name);
-//      } else {
-//        return metaValue.getGetterType(prop.getChildren());
-//      }
-//    } else {
-//      return metaClass.getGetterType(name);
-//    }
-        return null;
+        PropertyTokenizer prop = new PropertyTokenizer(name);
+        if (prop.hasNext()) {
+            MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
+            if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
+                return metaClass.getGetterType(name);
+            } else {
+                return metaValue.getGetterType(prop.getChildren());
+            }
+        } else {
+            return metaClass.getGetterType(name);
+        }
     }
 
     public boolean hasSetter(String name) {
-//    PropertyTokenizer prop = new PropertyTokenizer(name);
-//    if (prop.hasNext()) {
-//      if (metaClass.hasSetter(prop.getIndexedName())) {
-//        MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//        if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//          return metaClass.hasSetter(name);
-//        } else {
-//          return metaValue.hasSetter(prop.getChildren());
-//        }
-//      } else {
-//        return false;
-//      }
-//    } else {
-//      return metaClass.hasSetter(name);
-//    }
-        return false;
+        PropertyTokenizer prop = new PropertyTokenizer(name);
+        if (prop.hasNext()) {
+            if (metaClass.hasSetter(prop.getIndexedName())) {
+                MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
+                if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
+                    return metaClass.hasSetter(name);
+                } else {
+                    return metaValue.hasSetter(prop.getChildren());
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return metaClass.hasSetter(name);
+        }
     }
 
     public boolean hasGetter(String name) {
-//    PropertyTokenizer prop = new PropertyTokenizer(name);
-//    if (prop.hasNext()) {
-//      if (metaClass.hasGetter(prop.getIndexedName())) {
-//        MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//        if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//          return metaClass.hasGetter(name);
-//        } else {
-//          return metaValue.hasGetter(prop.getChildren());
-//        }
-//      } else {
-//        return false;
-//      }
-//    } else {
-//      return metaClass.hasGetter(name);
-//    }
-        return false;
+        PropertyTokenizer prop = new PropertyTokenizer(name);
+        if (prop.hasNext()) {
+            if (metaClass.hasGetter(prop.getIndexedName())) {
+                MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
+                if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
+                    return metaClass.hasGetter(name);
+                } else {
+                    return metaValue.hasGetter(prop.getChildren());
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return metaClass.hasGetter(name);
+        }
     }
 
     public boolean isCollection() {

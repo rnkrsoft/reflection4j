@@ -1,8 +1,8 @@
 package com.devops4j.reflection.wrapper;
 
 import com.devops4j.reflection.property.PropertyTokenizer;
+import lombok.*;
 import org.junit.Test;
-import com.devops4j.reflection.property.DemoBean;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,6 +12,18 @@ import java.util.List;
  * Created by devops4j on 2017/7/14.
  */
 public class CollectionWrapperTest {
+
+
+    @Data
+    @ToString
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static public class DemoBean {
+        protected String name;
+        protected int age;
+        protected BigDecimal amt;
+    }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGet() throws Exception {

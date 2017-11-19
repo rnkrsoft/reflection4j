@@ -9,17 +9,11 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class DefaultObjectFactory implements ObjectFactory, Serializable {
-    public static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
-    public static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
-//  public static final MetaObject NULL_META_OBJECT = new DefaultMetaObject(NullObject.class, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, new DefaultReflectorFactory());
-
-    private static final long serialVersionUID = -8855120656740914948L;
 
     public <T> T create(Class<T> type) {
         return create(type, null, null);
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
         Class<?> classToCreate = resolveInterface(type);
         // we know types are assignable

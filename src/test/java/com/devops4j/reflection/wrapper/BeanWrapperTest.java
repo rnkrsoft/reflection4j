@@ -3,15 +3,26 @@ package com.devops4j.reflection.wrapper;
 import com.devops4j.reflection.ObjectWrapper;
 import com.devops4j.reflection.property.PropertyTokenizer;
 import com.devops4j.reflection.factory.MetaObjectFactory;
+import lombok.*;
 import org.junit.Test;
-import com.devops4j.reflection.property.DemoBean;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 /**
  * Created by devops4j on 2017/7/12.
  */
 public class BeanWrapperTest {
+    @Data
+    @ToString
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static public class DemoBean {
+        protected String name;
+        protected int age;
+        protected BigDecimal amt;
+    }
 
     @Test
     public void testGet() throws Exception {

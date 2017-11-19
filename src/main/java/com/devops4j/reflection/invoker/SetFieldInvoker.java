@@ -1,6 +1,7 @@
 package com.devops4j.reflection.invoker;
 
 import com.devops4j.reflection.Invoker;
+import com.devops4j.track.ErrorContextFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +15,8 @@ public class SetFieldInvoker implements Invoker {
 
   public Object invoke(Object target, Object... args) throws IllegalAccessException, InvocationTargetException {
     if(args.length != 1){
-      throw new IllegalArgumentException("参数只能为1个值!");
+      ErrorContextFactory.instance().message("参数只能为1个值!").throwError();
+      return null;
     }
     field.set(target, args[0]);
     return null;

@@ -1,5 +1,6 @@
 package com.devops4j.reflection.property;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -9,26 +10,24 @@ public class PropertyTokenizerTest {
 
     @Test
     public void testNext1() throws Exception {
-        PropertyTokenizer tokenizer = new PropertyTokenizer("innerBean1[x].name");
-        System.out.println(tokenizer.getName());
-        System.out.println(tokenizer.getChildren());
-        System.out.println(tokenizer.getIndex());
-        System.out.println(tokenizer.getIndexedName());
+        PropertyTokenizer tokenizer = new PropertyTokenizer("innerBean1[1].name");
+        Assert.assertEquals("innerBean1", tokenizer.getName());
+        Assert.assertEquals("name", tokenizer.getChildren());
+        Assert.assertEquals("1", tokenizer.getIndex());
+        Assert.assertEquals("innerBean1[1]", tokenizer.getIndexedName());
     }
 
     @Test
     public void testNext2() throws Exception {
-        PropertyTokenizer tokenizer = new PropertyTokenizer("beanName[x].fieldName1[y].fieldName2");
-        System.out.println(tokenizer.getName());
-        System.out.println(tokenizer.getChildren());
-        System.out.println(tokenizer.getIndex());
-        System.out.println(tokenizer.getIndexedName());
-        {
-            tokenizer = tokenizer.next();
-            System.out.println(tokenizer.getName());
-            System.out.println(tokenizer.getChildren());
-            System.out.println(tokenizer.getIndex());
-            System.out.println(tokenizer.getIndexedName());
-        }
+        PropertyTokenizer tokenizer = new PropertyTokenizer("beanName[1].fieldName1[1].fieldName2");
+        Assert.assertEquals("beanName", tokenizer.getName());
+        Assert.assertEquals("fieldName1[1].fieldName2", tokenizer.getChildren());
+        Assert.assertEquals("1", tokenizer.getIndex());
+        Assert.assertEquals("beanName[1]", tokenizer.getIndexedName());
+        tokenizer = tokenizer.next();
+        Assert.assertEquals("fieldName1", tokenizer.getName());
+        Assert.assertEquals("fieldName2", tokenizer.getChildren());
+        Assert.assertEquals("1", tokenizer.getIndex());
+        Assert.assertEquals("fieldName1[1]", tokenizer.getIndexedName());
     }
 }
