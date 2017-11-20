@@ -1,7 +1,7 @@
 package com.devops4j.reflection.invoker;
 
 import com.devops4j.reflection.Invoker;
-import com.devops4j.reflection.Param;
+import com.devops4j.reflection.annotation.Param;
 import com.devops4j.track.ErrorContextFactory;
 import lombok.Getter;
 

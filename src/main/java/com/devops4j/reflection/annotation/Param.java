@@ -1,4 +1,4 @@
-package com.devops4j.reflection;
+package com.devops4j.reflection.annotation;
 
 import java.lang.annotation.*;
 
