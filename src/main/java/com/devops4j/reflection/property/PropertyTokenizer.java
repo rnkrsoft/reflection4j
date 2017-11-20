@@ -12,13 +12,13 @@ public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<
     private String children;
 
     /**
-     *
      * 接受格式
      * beanName.fieldName
      * beanName[x].fieldName
      * beanName.fieldName1.fieldName2
      * beanName[x].fieldName1[y].fieldName2
      * beanName[x].fieldName1.fieldName2
+     *
      * @param fullname 属性名
      */
     public PropertyTokenizer(String fullname) {
@@ -44,6 +44,7 @@ public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<
 
     /**
      * 当前属性名称
+     *
      * @return
      */
     public String getName() {
@@ -52,6 +53,7 @@ public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<
 
     /**
      * 当前属性序号
+     *
      * @return
      */
     public String getIndex() {
@@ -60,6 +62,7 @@ public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<
 
     /**
      * 当前属性名和序号
+     *
      * @return
      */
     public String getIndexedName() {
@@ -68,6 +71,7 @@ public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<
 
     /**
      * 下一级属性
+     *
      * @return
      */
     public String getChildren() {
@@ -76,6 +80,7 @@ public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<
 
     /**
      * 是否还有下一级属性
+     *
      * @return
      */
     public boolean hasNext() {
@@ -84,6 +89,7 @@ public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<
 
     /**
      * 返回下一级属性迭代器
+     *
      * @return
      */
     public PropertyTokenizer next() {

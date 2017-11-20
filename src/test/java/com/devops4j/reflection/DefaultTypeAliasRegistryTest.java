@@ -1,8 +1,8 @@
 package com.devops4j.reflection;
 
+import com.devops4j.reflection.factory.TypeAliasRegistryFactory;
 import org.junit.Assert;
 import org.junit.Test;
-import com.devops4j.reflection.factory.TypeAliasRegistryFactory;
 
 /**
  * Created by devops4j on 2017/7/12.

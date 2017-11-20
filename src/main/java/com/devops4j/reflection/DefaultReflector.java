@@ -1,7 +1,7 @@
 package com.devops4j.reflection;
 
-import com.devops4j.reflection.invoker.MethodInvoker;
 import com.devops4j.reflection.invoker.GetFieldInvoker;
+import com.devops4j.reflection.invoker.MethodInvoker;
 import com.devops4j.reflection.invoker.SetFieldInvoker;
 import com.devops4j.reflection.property.PropertyNamer;
 import com.devops4j.track.ErrorContextFactory;
@@ -318,10 +318,14 @@ public class DefaultReflector implements Reflector {
         return defaultConstructor != null;
     }
 
+    public Invoker getMethodInvoker(String name, Class... classes) {
+        return null;
+    }
+
     public Invoker getSetInvoker(String propertyName) {
         Invoker method = setMethods.get(propertyName);
         if (method == null) {
-            ErrorContextFactory.instance().message("There is no setter for property named '{}' in '{}'",propertyName, type).throwError();
+            ErrorContextFactory.instance().message("There is no setter for property named '{}' in '{}'", propertyName, type).throwError();
             return null;
         }
         return method;
@@ -330,7 +334,7 @@ public class DefaultReflector implements Reflector {
     public Invoker getGetInvoker(String propertyName) {
         Invoker method = getMethods.get(propertyName);
         if (method == null) {
-            ErrorContextFactory.instance().message("There is no getter for property named '{}' in '{}'",propertyName, type).throwError();
+            ErrorContextFactory.instance().message("There is no getter for property named '{}' in '{}'", propertyName, type).throwError();
             return null;
         }
         return method;
@@ -339,7 +343,7 @@ public class DefaultReflector implements Reflector {
     public Class<?> getSetterType(String propertyName) {
         Class<?> clazz = setTypes.get(propertyName);
         if (clazz == null) {
-            ErrorContextFactory.instance().message("There is no setter for property named '{}' in '{}'",propertyName, type).throwError();
+            ErrorContextFactory.instance().message("There is no setter for property named '{}' in '{}'", propertyName, type).throwError();
             return null;
         }
         return clazz;
@@ -348,7 +352,7 @@ public class DefaultReflector implements Reflector {
     public Class<?> getGetterType(String propertyName) {
         Class<?> clazz = getTypes.get(propertyName);
         if (clazz == null) {
-            ErrorContextFactory.instance().message("There is no getter for property named '{}' in '{}'",propertyName, type).throwError();
+            ErrorContextFactory.instance().message("There is no getter for property named '{}' in '{}'", propertyName, type).throwError();
             return null;
         }
         return clazz;

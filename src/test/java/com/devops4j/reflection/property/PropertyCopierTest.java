@@ -19,10 +19,11 @@ public class PropertyCopierTest {
         protected int age;
         protected BigDecimal amt;
     }
+
     @Test
     public void testCopyBeanProperties() throws Exception {
         DemoBean target = new DemoBean();
-        PropertyCopier.copyBeanProperties(DemoBean.class, DemoBean.builder().name("test1").age(12).amt(BigDecimal.TEN).build() ,target);
+        PropertyCopier.copyBeanProperties(DemoBean.class, DemoBean.builder().name("test1").age(12).amt(BigDecimal.TEN).build(), target);
         System.out.println(target);
     }
 
@@ -30,7 +31,7 @@ public class PropertyCopierTest {
     @Test(expected = IllegalArgumentException.class)
     public void testCopyBeanProperties_Fail() throws Exception {
         DemoBean target = new DemoBean();
-        PropertyCopier.copyBeanProperties(DemoBean.class, DemoBean.builder().name("test1").age(12).amt(BigDecimal.TEN) ,target);
+        PropertyCopier.copyBeanProperties(DemoBean.class, DemoBean.builder().name("test1").age(12).amt(BigDecimal.TEN), target);
         System.out.println(target);
     }
 }

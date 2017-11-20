@@ -1,8 +1,8 @@
 package com.devops4j.reflection.wrapper;
 
 import com.devops4j.reflection.ObjectWrapper;
-import com.devops4j.reflection.property.PropertyTokenizer;
 import com.devops4j.reflection.factory.MetaObjectFactory;
+import com.devops4j.reflection.property.PropertyTokenizer;
 import lombok.*;
 import org.junit.Test;
 

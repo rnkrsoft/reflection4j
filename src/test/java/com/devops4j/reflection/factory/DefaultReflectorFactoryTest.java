@@ -7,14 +7,12 @@ import lombok.Data;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by devops4j on 2017/11/19.
  */
 public class DefaultReflectorFactoryTest {
     @Data
-    static class DemoBean{
+    static class DemoBean {
         String name;
         int age;
     }
@@ -30,12 +28,12 @@ public class DefaultReflectorFactoryTest {
     }
 
     @Test
-    public void testFindForClass() throws Exception {
+    public void testFindForClass() throws Throwable{
         ReflectorFactory factory = new DefaultReflectorFactory();
         Reflector reflector = factory.findForClass(DemoBean.class);
-            DemoBean demoBean = new DemoBean();
-            demoBean.setName("xxx");
-            demoBean.setAge(23);
+        DemoBean demoBean = new DemoBean();
+        demoBean.setName("xxx");
+        demoBean.setAge(23);
         {
             Invoker invoker = reflector.getGetInvoker("name");
             String name = invoker.invoke(demoBean);

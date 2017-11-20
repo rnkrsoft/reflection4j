@@ -6,11 +6,12 @@ package com.devops4j.reflection.utils;
 public class StringUtils {
     /**
      * 首字母小写
+     *
      * @param value
      * @return
      */
-   public static String toFirstLowerCase(String value){
-        if(value == null || value.length() < 1){
+    public static String toFirstLowerCase(String value) {
+        if (value == null || value.length() < 1) {
             return value;
         }
         char[] chars = value.toCharArray();
@@ -20,11 +21,12 @@ public class StringUtils {
 
     /**
      * 首字母大写
+     *
      * @param value
      * @return
      */
-    public static String toFirstUpperCase(String value){
-        if(value == null || value.length() < 1){
+    public static String toFirstUpperCase(String value) {
+        if (value == null || value.length() < 1) {
             return value;
         }
         char[] chars = value.toCharArray();
@@ -34,20 +36,21 @@ public class StringUtils {
 
     /**
      * 将下划线风格的单词转换为驼峰命名
+     *
      * @param value
      * @return
      */
-    public static String toCamelCase(String value){
-        if(value == null){
+    public static String toCamelCase(String value) {
+        if (value == null) {
             return value;
         }
         String[] names = value.split("_");
         StringBuilder buffer = new StringBuilder(value.length());
         int idx = 0;
-        for (String name : names){
-            if(idx == 0){
+        for (String name : names) {
+            if (idx == 0) {
                 buffer.append(toFirstLowerCase(name));
-            }else {
+            } else {
                 buffer.append(toFirstUpperCase(name));
             }
             idx++;

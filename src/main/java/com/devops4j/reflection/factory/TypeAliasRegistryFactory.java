@@ -8,7 +8,8 @@ import com.devops4j.reflection.TypeAliasRegistry;
  */
 public class TypeAliasRegistryFactory {
     private static final TypeAliasRegistry TYPE_ALIAS_REGISTRY = new DefaultTypeAliasRegistry();
-    public static TypeAliasRegistry getInstance(){
+
+    public static TypeAliasRegistry getInstance() {
         return TYPE_ALIAS_REGISTRY;
     }
 }

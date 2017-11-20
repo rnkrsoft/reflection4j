@@ -55,8 +55,11 @@ public interface MetaObject {
      * @return Getter方法的类型
      */
     Class<?> getGetterType(String fieldName);
-     String[] getGetterNames();
-     String[] getSetterNames();
+
+    String[] getGetterNames();
+
+    String[] getSetterNames();
+
     /**
      * @param propName
      * @param useCamelCaseMapping

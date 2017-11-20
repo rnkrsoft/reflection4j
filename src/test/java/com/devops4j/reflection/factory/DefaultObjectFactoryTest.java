@@ -6,15 +6,14 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by devops4j on 2017/11/19.
  */
 public class DefaultObjectFactoryTest {
-    static class DemoBean{
+    static class DemoBean {
 
     }
+
     @Test
     public void testCreate() throws Exception {
         ObjectFactory factory = new DefaultObjectFactory();

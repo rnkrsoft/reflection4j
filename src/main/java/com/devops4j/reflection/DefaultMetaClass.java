@@ -15,7 +15,7 @@ import java.util.Collection;
 /**
  * Created by devops4j on 2017/6/19.
  */
-public class DefaultMetaClass implements MetaClass{
+public class DefaultMetaClass implements MetaClass {
     private ReflectorFactory reflectorFactory;
     private Reflector reflector;
 
@@ -28,6 +28,7 @@ public class DefaultMetaClass implements MetaClass{
         Class<?> propType = reflector.getGetterType(name);
         return MetaClassFactory.forClass(propType);
     }
+
     public boolean hasGetter(String fieldName) {
         PropertyTokenizer prop = new PropertyTokenizer(fieldName);
         if (prop.hasNext()) {
@@ -63,6 +64,7 @@ public class DefaultMetaClass implements MetaClass{
     public String[] getSetterNames() {
         return reflector.getSettablePropertyNames();
     }
+
     public String findProperty(String name) {
         StringBuilder prop = buildProperty(name, new StringBuilder());
         return prop.length() > 0 ? prop.toString() : null;
@@ -169,6 +171,7 @@ public class DefaultMetaClass implements MetaClass{
         }
         return null;
     }
+
     public StringBuilder buildProperty(String name, StringBuilder builder) {
         PropertyTokenizer prop = new PropertyTokenizer(name);
         if (prop.hasNext()) {
@@ -186,5 +189,9 @@ public class DefaultMetaClass implements MetaClass{
             }
         }
         return builder;
+    }
+
+    public Invoker getMethodInvoker(String name, Class... classes) {
+        return reflector.getMethodInvoker(name, classes);
     }
 }

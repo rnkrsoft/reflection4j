@@ -1,9 +1,9 @@
 package com.devops4j.reflection.wrapper;
 
-import com.devops4j.reflection.ObjectFactory;
-import com.devops4j.reflection.property.PropertyTokenizer;
 import com.devops4j.reflection.DefaultMetaObject;
 import com.devops4j.reflection.MetaObject;
+import com.devops4j.reflection.ObjectFactory;
+import com.devops4j.reflection.property.PropertyTokenizer;
 
 import java.util.HashMap;
 import java.util.List;

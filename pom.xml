@@ -218,7 +218,7 @@
                             <target>${jdk.version}</target>
                             <encoding>${sourceEncoding}</encoding>
                             <compilerArguments>
-                                <verbose />
+                                <verbose/>
                                 <bootclasspath>${java.home}\lib\rt.jar;${java.home}\lib\jce.jar</bootclasspath>
                             </compilerArguments>
                         </configuration>

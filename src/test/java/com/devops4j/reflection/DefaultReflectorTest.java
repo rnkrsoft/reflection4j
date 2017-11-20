@@ -3,7 +3,6 @@ package com.devops4j.reflection;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 /**

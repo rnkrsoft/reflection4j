@@ -11,11 +11,12 @@ import org.junit.Test;
  */
 public class DefaultMetaClassTest {
     @Data
-    static class DemoBean{
+    static class DemoBean {
         String name;
     }
+
     @Test
-    public void test1() throws Exception {
+    public void test1() throws Throwable {
         MetaClass metaClass = new DefaultMetaClass(DemoBean.class, new DefaultReflectorFactory());
         Invoker invoker = metaClass.getGetInvoker("name");
         DemoBean demoBean = new DemoBean();

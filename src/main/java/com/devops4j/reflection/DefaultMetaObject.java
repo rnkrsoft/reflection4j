@@ -1,11 +1,11 @@
 package com.devops4j.reflection;
 
-import com.devops4j.reflection.property.PropertyTokenizer;
-import com.devops4j.reflection.wrapper.MapWrapper;
 import com.devops4j.reflection.factory.MetaObjectFactory;
-import com.devops4j.reflection.wrapper.CollectionWrapper;
-import lombok.Getter;
+import com.devops4j.reflection.property.PropertyTokenizer;
 import com.devops4j.reflection.wrapper.BeanWrapper;
+import com.devops4j.reflection.wrapper.CollectionWrapper;
+import com.devops4j.reflection.wrapper.MapWrapper;
+import lombok.Getter;
 
 import java.util.Collection;
 import java.util.List;

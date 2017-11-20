@@ -3,8 +3,6 @@ package com.devops4j.reflection.property;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by devops4j on 2017/7/13.
  */

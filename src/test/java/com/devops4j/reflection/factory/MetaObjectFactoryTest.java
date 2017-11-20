@@ -7,17 +7,16 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by devops4j on 2017/11/19.
  */
 public class MetaObjectFactoryTest {
     @Data
-    static class DemoBean{
+    static class DemoBean {
         String name;
         int age;
     }
+
     @Test
     public void testForObject() throws Exception {
         MetaObject metaObject = MetaObjectFactory.forObject(new DemoBean());
@@ -28,5 +27,8 @@ public class MetaObjectFactoryTest {
         Assert.assertEquals(true, metaObject.hasGetter("name"));
         Assert.assertEquals(true, metaObject.hasGetter("age"));
         Assert.assertEquals(false, metaObject.hasGetter("age1"));
+        metaObject.setValue("name", "xxxxx");
+        String name = metaObject.getValue("name");
+        Assert.assertEquals("xxxxx", name);
     }
 }

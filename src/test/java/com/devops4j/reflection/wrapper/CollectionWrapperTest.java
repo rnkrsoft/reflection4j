@@ -28,9 +28,9 @@ public class CollectionWrapperTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testGet() throws Exception {
         PropertyTokenizer propertyTokenizer = new PropertyTokenizer("x[1].fieldName");
-        List list =  new ArrayList();
+        List list = new ArrayList();
         list.add(new DemoBean("test1", 12, BigDecimal.TEN));
-        CollectionWrapper collectionWrapper = new CollectionWrapper(null,list);
+        CollectionWrapper collectionWrapper = new CollectionWrapper(null, list);
         Object val = collectionWrapper.get(propertyTokenizer);
     }
 
@@ -81,9 +81,9 @@ public class CollectionWrapperTest {
 
     @Test
     public void testAdd() throws Exception {
-        List list =  new ArrayList();
+        List list = new ArrayList();
         list.add(new DemoBean("test1", 12, BigDecimal.TEN));
-        CollectionWrapper collectionWrapper = new CollectionWrapper(null,list);
+        CollectionWrapper collectionWrapper = new CollectionWrapper(null, list);
         collectionWrapper.add(new DemoBean("test2", 13, BigDecimal.TEN));
         Object obj = collectionWrapper.getNativeObject();
         System.out.println(obj);
@@ -91,9 +91,9 @@ public class CollectionWrapperTest {
 
     @Test
     public void testAddAll() throws Exception {
-        List list =  new ArrayList();
+        List list = new ArrayList();
         list.add(new DemoBean("test1", 12, BigDecimal.TEN));
-        CollectionWrapper collectionWrapper = new CollectionWrapper(null,list);
+        CollectionWrapper collectionWrapper = new CollectionWrapper(null, list);
         collectionWrapper.addAll(list);
         Object obj = collectionWrapper.getNativeObject();
         System.out.println(obj);
