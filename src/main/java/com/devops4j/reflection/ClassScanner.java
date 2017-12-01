@@ -1,4 +1,4 @@
-package com.devops4j.reflection.scanner;
+package com.devops4j.reflection;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -13,20 +13,17 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ClassScanner{
-	/**
-     * 从包package中获取所有的Class
-     * 
-     * @param pack
-     * @return
-     */
-    public Set<Class<?>> getClasses(String pack) {
+    public Set<Class<?>> scan(String _package, Class annClass) {
+        return null;
+    }
+    public Set<Class<?>> getClasses(String _package) {
 
         // 第一个class类的集合
         Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
         // 是否循环迭代
         boolean recursive = true;
         // 获取包的名字 并进行替换
-        String packageName = pack;
+        String packageName = _package;
         String packageDirName = packageName.replace('.', '/');
         // 定义一个枚举的集合 并进行循环来处理这个目录下的things
         Enumeration<URL> dirs;
