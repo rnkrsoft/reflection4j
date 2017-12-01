@@ -3,10 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.devops4j.reflection</groupId>
-    <artifactId>reflection</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>reflection</name>
+    <groupId>com.devops4j.reflection4j</groupId>
+    <artifactId>reflection4j</artifactId>
+    <version>1.0.0-beta1</version>
+    <name>reflection4j</name>
     <description>this is devops4j of reflection library!</description>
     <url>https://github.com/devops4j</url>
     <licenses>
@@ -34,13 +34,14 @@
     </scm>
     <dependencies>
         <dependency>
-            <groupId>com.devops4j.logtrace</groupId>
-            <artifactId>logtrace</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>com.devops4j.logtrace4j</groupId>
+            <artifactId>logtrace4j</artifactId>
+            <version>1.0.0-beta1</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
