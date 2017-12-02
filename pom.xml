@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.devops4j.reflection4j</groupId>
     <artifactId>reflection4j</artifactId>
-    <version>1.0.0-beta2</version>
+    <version>1.0.0-beta3</version>
     <name>reflection4j</name>
     <description>this is devops4j of reflection library!</description>
     <url>https://github.com/devops4j</url>
@@ -28,8 +28,8 @@
         <disruptor.version>3.3.5</disruptor.version>
     </properties>
     <scm>
-        <connection>git@github.com:devops4j/image-resize.git</connection>
-        <developerConnection>https://github.com/devops4j/reflection.git</developerConnection>
+        <connection>git@github.com:devops4j/reflection4j.git</connection>
+        <developerConnection>https://github.com/devops4j/reflection4j.git</developerConnection>
         <url>https://github.com/devops4j</url>
     </scm>
     <dependencies>
