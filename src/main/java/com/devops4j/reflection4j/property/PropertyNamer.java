@@ -1,7 +1,7 @@
 package com.devops4j.reflection4j.property;
 
 import com.devops4j.reflection4j.Utils;
-import com.devops4j.track.ErrorContextFactory;
+import com.devops4j.logtrace4j.ErrorContextFactory;
 
 /**
  * 这个类提供了几个用来判断属性特征和从方面名称中获取属性名称的函数，

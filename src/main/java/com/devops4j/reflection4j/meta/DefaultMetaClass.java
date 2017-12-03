@@ -5,7 +5,7 @@ import com.devops4j.reflection4j.factory.MetaClassFactory;
 import com.devops4j.reflection4j.invoker.GetFieldInvoker;
 import com.devops4j.reflection4j.invoker.MethodInvoker;
 import com.devops4j.reflection4j.property.PropertyTokenizer;
-import com.devops4j.track.ErrorContextFactory;
+import com.devops4j.logtrace4j.ErrorContextFactory;
 
 import java.lang.reflect.*;
 import java.util.Collection;

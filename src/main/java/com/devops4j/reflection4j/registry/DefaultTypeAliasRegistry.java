@@ -2,7 +2,7 @@ package com.devops4j.reflection4j.registry;
 
 import com.devops4j.reflection4j.TypeAliasRegistry;
 import com.devops4j.reflection4j.resource.ClassScanner;
-import com.devops4j.track.ErrorContextFactory;
+import com.devops4j.logtrace4j.ErrorContextFactory;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

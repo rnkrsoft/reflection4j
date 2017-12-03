@@ -3,7 +3,7 @@ package com.devops4j.reflection4j.wrapper;
 import com.devops4j.reflection4j.MetaObject;
 import com.devops4j.reflection4j.ObjectWrapper;
 import com.devops4j.reflection4j.property.PropertyTokenizer;
-import com.devops4j.track.ErrorContextFactory;
+import com.devops4j.logtrace4j.ErrorContextFactory;
 
 import java.util.List;
 import java.util.Map;

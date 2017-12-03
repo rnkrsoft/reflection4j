@@ -3,7 +3,7 @@ package com.devops4j.reflection4j.factory;
 import com.devops4j.reflection4j.MetaObject;
 import com.devops4j.reflection4j.ObjectWrapper;
 import com.devops4j.reflection4j.ObjectWrapperFactory;
-import com.devops4j.track.ErrorContextFactory;
+import com.devops4j.logtrace4j.ErrorContextFactory;
 
 public class DefaultObjectWrapperFactory implements ObjectWrapperFactory {
 

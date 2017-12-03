@@ -7,7 +7,7 @@ import com.devops4j.reflection4j.property.PropertyTokenizer;
 import com.devops4j.reflection4j.wrapper.BeanWrapper;
 import com.devops4j.reflection4j.wrapper.CollectionWrapper;
 import com.devops4j.reflection4j.wrapper.MapWrapper;
-import com.devops4j.track.ErrorContextFactory;
+import com.devops4j.logtrace4j.ErrorContextFactory;
 import lombok.Getter;
 
 import java.util.Collection;

@@ -1,6 +1,6 @@
 package com.devops4j.reflection4j.resource;
 
-import com.devops4j.track.ErrorContextFactory;
+import com.devops4j.logtrace4j.ErrorContextFactory;
 
 import java.io.File;
 import java.io.FileFilter;
