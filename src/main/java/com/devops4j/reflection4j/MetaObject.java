@@ -1,5 +1,9 @@
 package com.devops4j.reflection4j;
 
+import com.devops4j.reflection4j.factory.MetaClassFactory;
+import com.devops4j.reflection4j.factory.MetaObjectFactory;
+
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -10,64 +14,90 @@ public interface MetaObject {
     /**
      * 返回是否有Getter方法
      *
-     * @param fieldName 字段名
+     * @param propertyName 字段名
      * @return 如果存在返回真
      */
-    boolean hasGetter(String fieldName);
+    boolean hasGetter(String propertyName);
 
     /**
      * 返回是否有Setter方法
      *
-     * @param fieldName 字段名
+     * @param propertyName 字段名
      * @return 如果存在返回真
      */
-    boolean hasSetter(String fieldName);
+    boolean hasSetter(String propertyName);
 
     /**
      * 设置字段值
      *
-     * @param fieldName 字段名
+     * @param propertyName 字段名
      * @param value     字段值
      */
-    void setValue(String fieldName, Object value);
+    void setValue(String propertyName, Object value);
 
     /**
      * 获取字段值
      *
-     * @param fieldName 字段名
+     * @param propertyName 字段名
      * @param <T>       字段值
      * @return 字段值
      */
-    <T> T getValue(String fieldName);
+    <T> T getValue(String propertyName);
 
     /**
      * 返回Setter方法的类型
      *
-     * @param fieldName 字段名
+     * @param propertyName 字段名
      * @return Setter方法的类型
      */
-    Class<?> getSetterType(String fieldName);
+    Class<?> getSetterType(String propertyName);
 
     /**
      * 返回Getter方法的类型
      *
-     * @param fieldName 字段名
+     * @param propertyName 字段名
      * @return Getter方法的类型
      */
-    Class<?> getGetterType(String fieldName);
-
-    String[] getGetterNames();
-
-    String[] getSetterNames();
+    Class<?> getGetterType(String propertyName);
 
     /**
-     * @param propName
-     * @param useCamelCaseMapping
+     * 返回该类对应的所有Setter方法
+     *
+     * @return Setter方法列表
+     */
+    Collection<String> getGetterNames();
+    /**
+     * 返回该类对应的所有Setter方法
+     *
+     * @return Setter方法列表
+     */
+    Collection<String> getSetterNames();
+
+    /**
+     * 查找属性名
+     * 形如beanNam1.beanName2
+     * 形如beanNam1[0].beanName2
+     *
+     * @param propertyName 属性名
      * @return
      */
-    String findProperty(String propName, boolean useCamelCaseMapping);
+    String findProperty(String propertyName);
+    /**
+     * 查找属性名
+     * 形如beanNam1.beanName2
+     * 形如beanNam1[0].beanName2
+     *
+     * @param propertyName 属性名
+     * @param useCamelCaseMapping 是否转换为驼峰
+     * @return
+     */
+    String findProperty(String propertyName, boolean useCamelCaseMapping);
 
-    Object getOriginalObject();
+    /**
+     * 获取包装的对象
+     * @return 原生对象
+     */
+    <T> T getObject();
 
     boolean isCollection();
 
@@ -75,12 +105,27 @@ public interface MetaObject {
 
     void add(Object element);
 
+    /**
+     * 实例化属性为Bean的
+     * @param propertyName
+     */
+    MetaObject instantiatePropertyValue(String propertyName);
+
     ReflectorFactory getReflectorFactory();
 
     ObjectFactory getObjectFactory();
 
     ObjectWrapperFactory getObjectWrapperFactory();
+    MetaClassFactory getMetaClassFactory();
+    MetaObjectFactory getMetaObjectFactory();
 
-    MetaObject metaObjectForProperty(String property);
+    /**
+     * 获取属性值对应的对象元信息
+     * @param propertyName 属性名
+     * @return 对象元信息
+     */
+    MetaObject metaObjectForProperty(String propertyName);
 
+    MetaClass metaClassForProperty(String propertyName);
+    MetaClass getMetaClass();
 }

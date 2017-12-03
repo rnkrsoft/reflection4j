@@ -1,5 +1,6 @@
-package com.devops4j.reflection4j;
+package com.devops4j.reflection4j.registry;
 
+import com.devops4j.reflection4j.TypeAliasRegistry;
 import com.devops4j.reflection4j.factory.TypeAliasRegistryFactory;
 import org.junit.Assert;
 import org.junit.Test;

@@ -11,7 +11,7 @@ import java.util.Arrays;
  */
 public class DefaultReflectorTest {
 
-    static interface Entity<T> {
+    interface Entity<T> {
         T getId();
 
         void setId(T id);
@@ -31,6 +31,10 @@ public class DefaultReflectorTest {
 
         final String name;
 
+        public AbstractEntity() {
+            this.name = "";
+        }
+
         public AbstractEntity(String name, Long id) {
             this.name = name;
             this.id = id;
@@ -42,6 +46,9 @@ public class DefaultReflectorTest {
     }
 
     static class Section extends AbstractEntity implements Entity<Long> {
+        public Section() {
+        }
+
         public Section(String name, Long id) {
             super(name, id);
         }
@@ -51,8 +58,8 @@ public class DefaultReflectorTest {
     public void testGetSetterType() throws Exception {
         Reflector reflector = new DefaultReflector(Section.class);
         Assert.assertEquals(Long.class, reflector.getSetterType("id"));
-        System.out.println(Arrays.toString(reflector.getSettablePropertyNames()));
-        Assert.assertEquals(2, reflector.getSettablePropertyNames().length);
+        System.out.println(reflector.getSettablePropertyNames());
+        Assert.assertEquals(2, reflector.getSettablePropertyNames().size());
     }
 
     @Test
@@ -60,7 +67,7 @@ public class DefaultReflectorTest {
         Reflector reflector = new DefaultReflector(Section.class);
         Assert.assertEquals(Long.class, reflector.getGetterType("id"));
         Assert.assertEquals(String.class, reflector.getGetterType("name"));
-        Assert.assertEquals(2, reflector.getGettablePropertyNames().length);
+        Assert.assertEquals(2, reflector.getGettablePropertyNames().size());
     }
 
     @Test

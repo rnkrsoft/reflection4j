@@ -2,21 +2,27 @@ package com.devops4j.reflection4j.wrapper;
 
 import com.devops4j.reflection4j.*;
 import com.devops4j.reflection4j.factory.MetaClassFactory;
+import com.devops4j.reflection4j.factory.MetaObjectFactory;
 import com.devops4j.reflection4j.meta.DefaultMetaObject;
 import com.devops4j.reflection4j.property.PropertyTokenizer;
 import com.devops4j.track.ErrorContextFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 public class BeanWrapper extends BaseWrapper {
 
     private Object object;
     private MetaClass metaClass;
+    MetaClassFactory metaClassFactory;
+    MetaObjectFactory metaObjectFactory;
 
-    public BeanWrapper(MetaObject metaObject, Object object) {
+    public BeanWrapper(MetaObject metaObject, Object object, MetaClassFactory metaClassFactory,MetaObjectFactory metaObjectFactory) {
         super(metaObject);
         this.object = object;
-        this.metaClass = MetaClassFactory.forClass(object.getClass());
+        this.metaClassFactory = metaClassFactory;
+        this.metaObjectFactory = metaObjectFactory;
+        this.metaClass = metaClassFactory.forClass(object.getClass());
     }
 
     public Object get(PropertyTokenizer prop) {
@@ -32,7 +38,7 @@ public class BeanWrapper extends BaseWrapper {
     Object getBeanProperty(PropertyTokenizer prop, Object object) {
         try {
             String property = prop.getName();
-            Invoker method = metaClass.getGetInvoker(property);
+            Invoker method = metaClass.getGetter(property);
             try {
                 return method.invoke(object, NO_ARGUMENTS);
             } catch (Throwable t) {
@@ -58,7 +64,7 @@ public class BeanWrapper extends BaseWrapper {
 
     void setBeanProperty(PropertyTokenizer prop, Object object, Object value) {
         try {
-            Invoker method = metaClass.getSetInvoker(prop.getName());
+            Invoker method = metaClass.getSetter(prop.getName());
             Object[] params = {value};
             try {
                 method.invoke(object, params);
@@ -75,11 +81,11 @@ public class BeanWrapper extends BaseWrapper {
         return metaClass.findProperty(name, useCamelCaseMapping);
     }
 
-    public String[] getGetterNames() {
+    public Collection<String> getGetterNames() {
         return metaClass.getGetterNames();
     }
 
-    public String[] getSetterNames() {
+    public Collection<String> getSetterNames() {
         return metaClass.getSetterNames();
     }
 
@@ -87,7 +93,7 @@ public class BeanWrapper extends BaseWrapper {
         PropertyTokenizer prop = new PropertyTokenizer(name);
         if (prop.hasNext()) {
             MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-            if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
+            if (metaValue == GlobalSystemMetadata.NULL_META_OBJECT) {
                 return metaClass.getSetterType(name);
             } else {
                 return metaValue.getSetterType(prop.getChildren());
@@ -101,7 +107,7 @@ public class BeanWrapper extends BaseWrapper {
         PropertyTokenizer prop = new PropertyTokenizer(name);
         if (prop.hasNext()) {
             MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-            if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
+            if (metaValue == GlobalSystemMetadata.NULL_META_OBJECT) {
                 return metaClass.getGetterType(name);
             } else {
                 return metaValue.getGetterType(prop.getChildren());
@@ -116,7 +122,7 @@ public class BeanWrapper extends BaseWrapper {
         if (prop.hasNext()) {
             if (metaClass.hasSetter(prop.getIndexedName())) {
                 MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-                if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
+                if (metaValue == GlobalSystemMetadata.NULL_META_OBJECT) {
                     return metaClass.hasSetter(name);
                 } else {
                     return metaValue.hasSetter(prop.getChildren());
@@ -134,7 +140,7 @@ public class BeanWrapper extends BaseWrapper {
         if (prop.hasNext()) {
             if (metaClass.hasGetter(prop.getIndexedName())) {
                 MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-                if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
+                if (metaValue == GlobalSystemMetadata.NULL_META_OBJECT) {
                     return metaClass.hasGetter(name);
                 } else {
                     return metaValue.hasGetter(prop.getChildren());
@@ -163,15 +169,15 @@ public class BeanWrapper extends BaseWrapper {
         return (T) object;
     }
 
-    public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
+    public MetaObject instantiatePropertyValue(PropertyTokenizer prop, ObjectFactory objectFactory) {
         MetaObject metaValue;
         Class<?> type = getSetterType(prop.getName());
         try {
             Object newObject = objectFactory.create(type);
-            metaValue = new DefaultMetaObject(newObject, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory(), metaObject.getReflectorFactory());
+            metaValue = new DefaultMetaObject(newObject, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory(), metaObject.getReflectorFactory(), metaObject.getMetaClassFactory(), metaObject.getMetaObjectFactory());
             set(prop, newObject);
         } catch (Exception e) {
-            ErrorContextFactory.instance().message("Cannot set value of property '{}' because '{}' is null and cannot be instantiated on instance of {}.", name, name, type.getName()).cause(e).throwError();
+            ErrorContextFactory.instance().message("Cannot set value of property '{}' because '{}' is null and cannot be instantiated on instance of {}.", prop.getName(), prop.getName(), type.getName()).cause(e).throwError();
             return null;
         }
         return metaValue;

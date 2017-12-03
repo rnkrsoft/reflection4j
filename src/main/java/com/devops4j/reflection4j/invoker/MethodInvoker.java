@@ -38,7 +38,7 @@ public class MethodInvoker implements Invoker {
         }
     }
 
-    public <T> T invoke(Object target, Object... args) throws Throwable {
+    public <T> T invoke(Object target, Object... args) throws Exception {
         try {
             if (args.length != paramsClass.length) {
                 ErrorContextFactory.instance().message("参数实际个数{}与定义个数{}不一致", args.length, paramsClass.length).throwError();
@@ -52,11 +52,11 @@ public class MethodInvoker implements Invoker {
             return (T) method.invoke(target, args1);
         } catch (InvocationTargetException e) {
             Throwable throwable = e.getTargetException();
-            throw  throwable;
+            throw  new Exception(throwable);
         }
     }
 
-    public <T> T invoke(Object target, Map<String, Object> args) throws Throwable {
+    public <T> T invoke(Object target, Map<String, Object> args) throws Exception {
         Object[] args0 = new Object[paramsClass.length];
         for (int i = 0; i < paramNames.length; i++) {
             String argName = paramNames[i];
@@ -72,7 +72,7 @@ public class MethodInvoker implements Invoker {
             return (T) method.invoke(target, args0);
         } catch (InvocationTargetException e) {
             Throwable throwable = e.getTargetException();
-            throw  throwable;
+            throw  new Exception(throwable);
         }
     }
 

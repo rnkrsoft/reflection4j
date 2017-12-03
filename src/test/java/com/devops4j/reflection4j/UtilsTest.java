@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by devops4j on 2017/7/28.
  */
-public class StringUtilsTest {
+public class UtilsTest {
 
     @Test
     public void testToFirstLowerCase() throws Exception {

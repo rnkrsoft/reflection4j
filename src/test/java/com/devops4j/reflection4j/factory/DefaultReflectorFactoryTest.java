@@ -35,12 +35,12 @@ public class DefaultReflectorFactoryTest {
         demoBean.setName("xxx");
         demoBean.setAge(23);
         {
-            Invoker invoker = reflector.getGetInvoker("name");
+            Invoker invoker = reflector.getGetter("name");
             String name = invoker.invoke(demoBean);
             Assert.assertEquals("xxx", name);
         }
         {
-            Invoker invoker = reflector.getGetInvoker("age");
+            Invoker invoker = reflector.getGetter("age");
             int age = invoker.invoke(demoBean);
             Assert.assertEquals(23, age);
         }

@@ -15,17 +15,29 @@ import java.util.*;
  * 默认实现的反射器接口
  */
 public class DefaultReflector implements Reflector {
+    static final Set<String> IGNORE_FIELD = new HashSet();
 
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+    static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-    private Class<?> type;
-    private String[] readablePropertyNames = EMPTY_STRING_ARRAY;
-    private String[] writablePropertyNames = EMPTY_STRING_ARRAY;
-    private Map<String, Invoker> setMethods = new HashMap<String, Invoker>();
-    private Map<String, Invoker> getMethods = new HashMap<String, Invoker>();
-    private Map<String, Class<?>> setTypes = new HashMap<String, Class<?>>();
-    private Map<String, Class<?>> getTypes = new HashMap<String, Class<?>>();
-    private Constructor<?> defaultConstructor;
+    Class<?> type;
+    String[] readablePropertyNames = EMPTY_STRING_ARRAY;
+    String[] writablePropertyNames = EMPTY_STRING_ARRAY;
+    Map<String, Invoker> setMethods = new HashMap();
+    Map<String, Invoker> getMethods = new HashMap();
+    Map<String, Class<?>> setTypes = new HashMap();
+    Map<String, Class<?>> getTypes = new HashMap();
+    Map<String, Field> fields = new HashMap();
+    Constructor<?> defaultConstructor;
+
+    static {
+        IGNORE_FIELD.add("serialPersistentFields");
+        IGNORE_FIELD.add("CASE_INSENSITIVE_ORDER");
+        IGNORE_FIELD.add("bytes");
+        IGNORE_FIELD.add("class");
+        IGNORE_FIELD.add("value");
+        IGNORE_FIELD.add("hash");
+        IGNORE_FIELD.add("empty");
+    }
 
     public DefaultReflector(Class<?> clazz) {
         type = clazz;
@@ -37,8 +49,9 @@ public class DefaultReflector implements Reflector {
         writablePropertyNames = setMethods.keySet().toArray(new String[setMethods.keySet().size()]);
     }
 
-    private void addDefaultConstructor(Class<?> clazz) {
+    void addDefaultConstructor(Class<?> clazz) {
         Constructor<?>[] consts = clazz.getDeclaredConstructors();
+        boolean found = false;
         for (Constructor<?> constructor : consts) {
             if (constructor.getParameterTypes().length == 0) {
                 if (canAccessPrivateMethods()) {
@@ -48,29 +61,31 @@ public class DefaultReflector implements Reflector {
                         // Ignored. This is only a final precaution, nothing we can do.
                     }
                 }
+
                 if (constructor.isAccessible()) {
                     this.defaultConstructor = constructor;
                 }
+                found = true;
             }
         }
+//        if (!found) {
+//            ErrorContextFactory.instance().message("类'{}'不存在无参构造函数", clazz).solution("类'{}'增加无参构造函数'public {}(){}'", clazz, clazz.getSimpleName(), "{}").throwError();
+//            return;
+//        }
     }
 
-    private void addGetMethods(Class<?> cls) {
+    void addGetMethods(Class<?> cls) {
         Map<String, List<Method>> conflictingGetters = new HashMap<String, List<Method>>();
         Method[] methods = getClassMethods(cls);
         for (Method method : methods) {
             String name = method.getName();
-            if (name.equals("getClass")) {
-                continue;
-            }
-            if (name.startsWith("get") && name.length() > 3) {
-                if (method.getParameterTypes().length == 0) {
-                    name = PropertyNamer.methodToProperty(name);
-                    addMethodConflict(conflictingGetters, name, method);
+            if (PropertyNamer.isGetter(name)) {
+                name = PropertyNamer.methodToProperty(name);
+                if (IGNORE_FIELD.contains(name)) {
+                    continue;
                 }
-            } else if (name.startsWith("is") && name.length() > 2) {
+                //GETTER为无参
                 if (method.getParameterTypes().length == 0) {
-                    name = PropertyNamer.methodToProperty(name);
                     addMethodConflict(conflictingGetters, name, method);
                 }
             }
@@ -78,7 +93,7 @@ public class DefaultReflector implements Reflector {
         resolveGetterConflicts(conflictingGetters);
     }
 
-    private void resolveGetterConflicts(Map<String, List<Method>> conflictingGetters) {
+    void resolveGetterConflicts(Map<String, List<Method>> conflictingGetters) {
         for (String propName : conflictingGetters.keySet()) {
             List<Method> getters = conflictingGetters.get(propName);
             Iterator<Method> iterator = getters.iterator();
@@ -92,7 +107,7 @@ public class DefaultReflector implements Reflector {
                     Method method = iterator.next();
                     Class<?> methodType = method.getReturnType();
                     if (methodType.equals(getterType)) {
-                        ErrorContextFactory.instance().message("Illegal overloaded getter method with ambiguous type for property {} in class {}.  This breaks the JavaBeans " + "specification and can cause unpredicatble results.", propName, firstMethod.getDeclaringClass()).throwError();
+                        ErrorContextFactory.instance().message("类'{}'中存在冲突的Getter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).throwError();
                         return;
                     } else if (methodType.isAssignableFrom(getterType)) {
                         // OK getter type is descendant
@@ -100,7 +115,7 @@ public class DefaultReflector implements Reflector {
                         getter = method;
                         getterType = methodType;
                     } else {
-                        ErrorContextFactory.instance().message("Illegal overloaded getter method with ambiguous type for property {} in class {}.  This breaks the JavaBeans " + "specification and can cause unpredicatble results.", propName, firstMethod.getDeclaringClass()).throwError();
+                        ErrorContextFactory.instance().message("类'{}'中存在冲突的Getter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).throwError();
                         return;
                     }
                 }
@@ -109,21 +124,25 @@ public class DefaultReflector implements Reflector {
         }
     }
 
-    private void addGetMethod(String name, Method method) {
+    void addGetMethod(String name, Method method) {
         if (isValidPropertyName(name)) {
             getMethods.put(name, new MethodInvoker(method));
             getTypes.put(name, method.getReturnType());
         }
     }
 
-    private void addSetMethods(Class<?> cls) {
+    void addSetMethods(Class<?> cls) {
         Map<String, List<Method>> conflictingSetters = new HashMap<String, List<Method>>();
         Method[] methods = getClassMethods(cls);
         for (Method method : methods) {
             String name = method.getName();
-            if (name.startsWith("set") && name.length() > 3) {
+            if (PropertyNamer.isSetter(name)) {
+                name = PropertyNamer.methodToProperty(name);
+                if (IGNORE_FIELD.contains(name)) {
+                    continue;
+                }
+                //SETTER为1个参数
                 if (method.getParameterTypes().length == 1) {
-                    name = PropertyNamer.methodToProperty(name);
                     addMethodConflict(conflictingSetters, name, method);
                 }
             }
@@ -131,7 +150,14 @@ public class DefaultReflector implements Reflector {
         resolveSetterConflicts(conflictingSetters);
     }
 
-    private void addMethodConflict(Map<String, List<Method>> conflictingMethods, String name, Method method) {
+    /**
+     * 增加相互干扰的方法
+     *
+     * @param conflictingMethods
+     * @param name
+     * @param method
+     */
+    void addMethodConflict(Map<String, List<Method>> conflictingMethods, String name, Method method) {
         List<Method> list = conflictingMethods.get(name);
         if (list == null) {
             list = new ArrayList<Method>();
@@ -140,7 +166,7 @@ public class DefaultReflector implements Reflector {
         list.add(method);
     }
 
-    private void resolveSetterConflicts(Map<String, List<Method>> conflictingSetters) {
+    void resolveSetterConflicts(Map<String, List<Method>> conflictingSetters) {
         for (String propName : conflictingSetters.keySet()) {
             List<Method> setters = conflictingSetters.get(propName);
             Method firstMethod = setters.get(0);
@@ -149,8 +175,7 @@ public class DefaultReflector implements Reflector {
             } else {
                 Class<?> expectedType = getTypes.get(propName);
                 if (expectedType == null) {
-                    ErrorContextFactory.instance().message("Illegal overloaded setter method with ambiguous type for property {} in class {}.  This breaks the JavaBeans " +
-                            "specification and can cause unpredicatble results.", propName, firstMethod.getDeclaringClass()).throwError();
+                    ErrorContextFactory.instance().message("类'{}'中存在冲突的Setter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).throwError();
                     return;
                 } else {
                     Iterator<Method> methods = setters.iterator();
@@ -164,8 +189,7 @@ public class DefaultReflector implements Reflector {
                         }
                     }
                     if (setter == null) {
-                        ErrorContextFactory.instance().message("Illegal overloaded setter method with ambiguous type for property {} in class {}.  This breaks the JavaBeans " +
-                                "specification and can cause unpredicatble results.", propName, firstMethod.getDeclaringClass()).throwError();
+                        ErrorContextFactory.instance().message("类'{}'中存在冲突的Setter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).throwError();
                         return;
                     }
                     addSetMethod(propName, setter);
@@ -174,14 +198,14 @@ public class DefaultReflector implements Reflector {
         }
     }
 
-    private void addSetMethod(String name, Method method) {
+    void addSetMethod(String name, Method method) {
         if (isValidPropertyName(name)) {
             setMethods.put(name, new MethodInvoker(method));
             setTypes.put(name, method.getParameterTypes()[0]);
         }
     }
 
-    private void addFields(Class<?> clazz) {
+    void addFields(Class<?> clazz) {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             if (canAccessPrivateMethods()) {
@@ -190,6 +214,9 @@ public class DefaultReflector implements Reflector {
                 } catch (Exception e) {
                     // Ignored. This is only a final precaution, nothing we can do.
                 }
+            }
+            if (IGNORE_FIELD.contains(field.getName())) {
+                continue;
             }
             if (field.isAccessible()) {
                 if (!setMethods.containsKey(field.getName())) {
@@ -204,37 +231,38 @@ public class DefaultReflector implements Reflector {
                 if (!getMethods.containsKey(field.getName())) {
                     addGetField(field);
                 }
+                this.fields.put(field.getName(), field);
             }
         }
+        //将父类的属性加入
         if (clazz.getSuperclass() != null) {
             addFields(clazz.getSuperclass());
         }
     }
 
-    private void addSetField(Field field) {
+    void addSetField(Field field) {
         if (isValidPropertyName(field.getName())) {
             setMethods.put(field.getName(), new SetFieldInvoker(field));
             setTypes.put(field.getName(), field.getType());
         }
     }
 
-    private void addGetField(Field field) {
+    void addGetField(Field field) {
         if (isValidPropertyName(field.getName())) {
             getMethods.put(field.getName(), new GetFieldInvoker(field));
             getTypes.put(field.getName(), field.getType());
         }
     }
 
-    private boolean isValidPropertyName(String name) {
+    boolean isValidPropertyName(String name) {
         return !(name.startsWith("$") || "serialVersionUID".equals(name) || "class".equals(name));
     }
 
-    private Method[] getClassMethods(Class<?> cls) {
+    Method[] getClassMethods(Class<?> cls) {
         Map<String, Method> uniqueMethods = new HashMap<String, Method>();
         Class<?> currentClass = cls;
         while (currentClass != null) {
             addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
-
             // we also need to look for interface methods -
             // because the class may be abstract
             Class<?>[] interfaces = currentClass.getInterfaces();
@@ -250,7 +278,7 @@ public class DefaultReflector implements Reflector {
         return methods.toArray(new Method[methods.size()]);
     }
 
-    private void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
+    void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
         for (Method currentMethod : methods) {
             if (!currentMethod.isBridge()) {
                 String signature = getSignature(currentMethod);
@@ -272,7 +300,7 @@ public class DefaultReflector implements Reflector {
         }
     }
 
-    private String getSignature(Method method) {
+    String getSignature(Method method) {
         StringBuilder sb = new StringBuilder();
         Class<?> returnType = method.getReturnType();
         if (returnType != null) {
@@ -324,7 +352,7 @@ public class DefaultReflector implements Reflector {
         return null;
     }
 
-    public Invoker getSetInvoker(String propertyName) {
+    public Invoker getSetter(String propertyName) {
         Invoker method = setMethods.get(propertyName);
         if (method == null) {
             ErrorContextFactory.instance().message("There is no setter for property named '{}' in '{}'", propertyName, type).throwError();
@@ -333,7 +361,7 @@ public class DefaultReflector implements Reflector {
         return method;
     }
 
-    public Invoker getGetInvoker(String propertyName) {
+    public Invoker getGetter(String propertyName) {
         Invoker method = getMethods.get(propertyName);
         if (method == null) {
             ErrorContextFactory.instance().message("There is no getter for property named '{}' in '{}'", propertyName, type).throwError();
@@ -360,12 +388,12 @@ public class DefaultReflector implements Reflector {
         return clazz;
     }
 
-    public String[] getGettablePropertyNames() {
-        return readablePropertyNames;
+    public Collection getGettablePropertyNames() {
+        return Arrays.asList(readablePropertyNames);
     }
 
-    public String[] getSettablePropertyNames() {
-        return writablePropertyNames;
+    public Collection getSettablePropertyNames() {
+        return Arrays.asList(writablePropertyNames);
     }
 
     public boolean hasSetter(String propertyName) {
@@ -375,5 +403,10 @@ public class DefaultReflector implements Reflector {
     public boolean hasGetter(String propertyName) {
         return getMethods.keySet().contains(propertyName);
     }
+
+    public boolean hasProperty(String propertyName) {
+        return fields.containsKey(propertyName);
+    }
+
 
 }

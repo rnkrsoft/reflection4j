@@ -1,6 +1,6 @@
 package com.devops4j.reflection4j.wrapper;
 
-import com.devops4j.reflection4j.factory.MetaObjectFactory;
+import com.devops4j.reflection4j.GlobalSystemMetadata;
 import com.devops4j.reflection4j.property.PropertyTokenizer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class MapWrapperTest {
         Map map = new HashMap();
         map.put("key1", "val1");
         map.put("key2", "val2");
-        MapWrapper mapWrapper = new MapWrapper(MetaObjectFactory.forObject(map), map);
+        MapWrapper mapWrapper = new MapWrapper(GlobalSystemMetadata.META_OBJECT_FACTORY.forObject(map), map);
         PropertyTokenizer propertyTokenizer = new PropertyTokenizer("key1");
         Object val1 = mapWrapper.get(propertyTokenizer);
         Assert.assertEquals("val1", val1);

@@ -2,26 +2,67 @@ package com.devops4j.reflection4j.factory;
 
 import com.devops4j.reflection4j.ObjectFactory;
 import com.devops4j.track.ErrorContextFactory;
+import com.devops4j.track.TraceableRuntimeException;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultObjectFactory implements ObjectFactory, Serializable {
 
-    public <T> T create(Class<T> type) {
-        return create(type, null, null);
+    final Map<Class, Class> registers = new ConcurrentHashMap<Class, Class>();
+
+    public DefaultObjectFactory() {
+        register(List.class, ArrayList.class);
+        register(Collection.class, ArrayList.class);
+        register(Iterable.class, ArrayList.class);
+        register(Map.class, HashMap.class);
+        register(SortedSet.class, TreeSet.class);
+        register(Set.class, HashSet.class);
     }
 
-    public <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
+    public <T> T create(Class<T> type) {
         Class<?> classToCreate = resolveInterface(type);
-        // we know types are assignable
+        return (T) instantiateClass(classToCreate, null, null);
+    }
+
+    public <T> T create(Class<T> type, List<Class> constructorArgTypes, List<Object> constructorArgs) {
+        Class<?> classToCreate = resolveInterface(type);
         return (T) instantiateClass(classToCreate, constructorArgTypes, constructorArgs);
+    }
+
+    public <T> T create(Class<T> type, Class[] constructorArgTypes, Object[] constructorArgs) {
+        Class<?> classToCreate = resolveInterface(type);
+        return (T) instantiateClass(classToCreate, Arrays.asList(constructorArgTypes), Arrays.asList(constructorArgs));
+    }
+
+    public void register(Class interfaceClass, Class implementClass) {
+        if (!interfaceClass.isInterface()) {
+            ErrorContextFactory.instance().message("注册接口映射时,interfaceClass参数'{}'不是接口", interfaceClass).throwError();
+            return;
+        }
+        if (implementClass.isInterface()) {
+            ErrorContextFactory.instance().message("注册接口映射时,implementClass参数'{}'是接口", interfaceClass).solution("使用'{}'接口的实现类", interfaceClass).throwError();
+            return;
+        }
+        if (implementClass.getModifiers() == Modifier.ABSTRACT) {
+            ErrorContextFactory.instance().message("注册接口映射时,implementClass参数'{}'是抽象的", interfaceClass).solution("使用'{}'接口的非抽象实现类", interfaceClass).throwError();
+            return;
+        }
+        registers.put(interfaceClass, implementClass);
+    }
+
+    public Map<Class, Class> getMappings() {
+        return new HashMap(registers);
     }
 
     public void setProperties(Properties properties) {
         // no props for default
     }
+
 
     /**
      * 实例化类
@@ -32,18 +73,26 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
      * @param <T>
      * @return
      */
-    <T> T instantiateClass(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
+    <T> T instantiateClass(Class<T> type, List<Class> constructorArgTypes, List<Object> constructorArgs) {
+        if (type.isArray()) {
+            Class arrayClass = type.getComponentType();
+            return (T) Array.newInstance(arrayClass, 0);
+        }
         try {
             Constructor<T> constructor;
             //如果参数值或者参数类型为空，则采用默认构造函数进行创建
             if (constructorArgTypes == null || constructorArgs == null) {
-                constructor = type.getDeclaredConstructor();
-                //无参构造如果为私有，设置为可以访问
-                if (!constructor.isAccessible()) {
-                    constructor.setAccessible(true);
+                try {
+                    constructor = type.getDeclaredConstructor();
+                    //无参构造如果为私有，设置为可以访问
+                    if (!constructor.isAccessible()) {
+                        constructor.setAccessible(true);
+                    }
+                    //通过无参构造创建实例
+                    return constructor.newInstance();
+                } catch (Exception e) {
+                    ErrorContextFactory.instance().message("类'{}'不能使用无参构造方法创建实例", type).solution("请换成该类的有参构造方法创建实例").cause(e).throwError();
                 }
-                //通过无参构造创建实例
-                return constructor.newInstance();
             }
             //如果参数值或者参数类型不为空，则采用带有参数的构造函数
             constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[constructorArgTypes.size()]));
@@ -51,6 +100,8 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
                 constructor.setAccessible(true);
             }
             return constructor.newInstance(constructorArgs.toArray(new Object[constructorArgs.size()]));
+        } catch (TraceableRuntimeException e) {
+            throw e;
         } catch (Exception e) {
             StringBuilder argTypes = new StringBuilder();
             if (constructorArgTypes != null && !constructorArgTypes.isEmpty()) {
@@ -80,17 +131,35 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
      * @return
      */
     protected Class<?> resolveInterface(Class<?> type) {
-        Class<?> classToCreate;
-        if (type == List.class || type == Collection.class || type == Iterable.class) {
-            classToCreate = ArrayList.class;
-        } else if (type == Map.class) {
-            classToCreate = HashMap.class;
-        } else if (type == SortedSet.class) { // issue #510 Collections Support
-            classToCreate = TreeSet.class;
-        } else if (type == Set.class) {
-            classToCreate = HashSet.class;
-        } else {
+        Class classToCreate = registers.get(type);
+        if (classToCreate == null) {
             classToCreate = type;
+        }
+        if (type == Byte.TYPE
+                || type == Byte.class
+                || type == Boolean.TYPE
+                || type == Boolean.class
+                || type == Short.TYPE
+                || type == Short.class
+                || type == Integer.TYPE
+                || type == Integer.class
+                || type == Long.TYPE
+                || type == Long.class
+                || type == Float.TYPE
+                || type == Float.class
+                || type == Double.TYPE
+                || type == Double.class
+                ) {
+            ErrorContextFactory.instance().message("创建实例时,implementClass参数'{}'是基本类型", classToCreate).throwError();
+            return null;
+        }
+        if (classToCreate.isInterface()) {
+            ErrorContextFactory.instance().message("创建实例时,implementClass参数'{}'是接口", classToCreate).solution("使用'{}'接口的实现类", classToCreate).throwError();
+            return null;
+        }
+        if (classToCreate.getModifiers() == Modifier.ABSTRACT) {
+            ErrorContextFactory.instance().message("创建实例时,implementClass参数'{}'是抽象的", classToCreate).solution("使用'{}'接口的非抽象实现类", classToCreate).throwError();
+            return null;
         }
         return classToCreate;
     }

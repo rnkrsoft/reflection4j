@@ -28,11 +28,11 @@ public class CollectionWrapper implements ObjectWrapper {
         throw new UnsupportedOperationException();
     }
 
-    public String[] getGetterNames() {
+    public Collection getGetterNames() {
         throw new UnsupportedOperationException();
     }
 
-    public String[] getSetterNames() {
+    public Collection getSetterNames() {
         throw new UnsupportedOperationException();
     }
 
@@ -68,7 +68,7 @@ public class CollectionWrapper implements ObjectWrapper {
         return (T) object;
     }
 
-    public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
+    public MetaObject instantiatePropertyValue(PropertyTokenizer prop, ObjectFactory objectFactory) {
         throw new UnsupportedOperationException();
     }
 

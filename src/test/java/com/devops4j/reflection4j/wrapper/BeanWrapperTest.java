@@ -1,7 +1,7 @@
 package com.devops4j.reflection4j.wrapper;
 
+import com.devops4j.reflection4j.GlobalSystemMetadata;
 import com.devops4j.reflection4j.ObjectWrapper;
-import com.devops4j.reflection4j.factory.MetaObjectFactory;
 import com.devops4j.reflection4j.property.PropertyTokenizer;
 import lombok.*;
 import org.junit.Test;
@@ -28,7 +28,8 @@ public class BeanWrapperTest {
     public void testGet() throws Exception {
         DemoBean demoBean = new DemoBean();
         demoBean.setName("wwwww");
-        ObjectWrapper objectWrapper = new BeanWrapper(MetaObjectFactory.forObject(demoBean), demoBean);
+
+        ObjectWrapper objectWrapper = new BeanWrapper(GlobalSystemMetadata.META_OBJECT_FACTORY.forObject(demoBean), demoBean, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
         System.out.println(Arrays.asList(objectWrapper.getGetterNames()));
         System.out.println(Arrays.asList(objectWrapper.getSetterNames()));
         PropertyTokenizer prop = new PropertyTokenizer("name");

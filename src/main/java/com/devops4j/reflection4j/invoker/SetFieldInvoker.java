@@ -25,7 +25,7 @@ public class SetFieldInvoker implements Invoker {
         return null;
     }
 
-    public <T> T invoke(Object target, Map<String, Object> args) throws Throwable {
+    public <T> T invoke(Object target, Map<String, Object> args) throws Exception {
         ErrorContextFactory.instance().message("该执行器不支持该方式调用!").throwError();
         return null;
     }

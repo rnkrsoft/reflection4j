@@ -1,6 +1,6 @@
 package com.devops4j.reflection4j.factory;
 
-import com.devops4j.reflection4j.DefaultTypeAliasRegistry;
+import com.devops4j.reflection4j.registry.DefaultTypeAliasRegistry;
 import com.devops4j.reflection4j.TypeAliasRegistry;
 
 /**

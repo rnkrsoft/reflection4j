@@ -5,6 +5,7 @@ import com.devops4j.reflection4j.MetaObject;
 import com.devops4j.reflection4j.ObjectFactory;
 import com.devops4j.reflection4j.property.PropertyTokenizer;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +41,12 @@ public class MapWrapper extends BaseWrapper {
         return name;
     }
 
-    public String[] getGetterNames() {
-        return map.keySet().toArray(new String[map.keySet().size()]);
+    public Collection<String> getGetterNames() {
+        return map.keySet();
     }
 
-    public String[] getSetterNames() {
-        return map.keySet().toArray(new String[map.keySet().size()]);
+    public Collection<String> getSetterNames() {
+        return map.keySet();
     }
 
     public Class<?> getSetterType(String name) {
@@ -125,10 +126,10 @@ public class MapWrapper extends BaseWrapper {
         return map;
     }
 
-    public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
+    public MetaObject instantiatePropertyValue(PropertyTokenizer prop, ObjectFactory objectFactory) {
         HashMap<String, Object> map = new HashMap<String, Object>();
         set(prop, map);
-        return new DefaultMetaObject(map, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory(), metaObject.getReflectorFactory());
+        return new DefaultMetaObject(map, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory(), metaObject.getReflectorFactory(), metaObject.getMetaClassFactory(), metaObject.getMetaObjectFactory());
     }
 
 }

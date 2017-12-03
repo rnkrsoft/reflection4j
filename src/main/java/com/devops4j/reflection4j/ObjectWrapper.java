@@ -2,6 +2,7 @@ package com.devops4j.reflection4j;
 
 import com.devops4j.reflection4j.property.PropertyTokenizer;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ObjectWrapper {
@@ -35,14 +36,14 @@ public interface ObjectWrapper {
      *
      * @return
      */
-    String[] getGetterNames();
+    Collection<String> getGetterNames();
 
     /**
      * 获取Setter方法名列表
      *
      * @return
      */
-    String[] getSetterNames();
+    Collection<String> getSetterNames();
 
     /**
      * 根据属性名获取Setter方法的入参类型
@@ -105,5 +106,11 @@ public interface ObjectWrapper {
      */
     <T> Object getNativeObject();
 
-    MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory);
+    /**
+     * 通过属性名实例化属性
+     * @param prop
+     * @param objectFactory
+     * @return
+     */
+    MetaObject instantiatePropertyValue(PropertyTokenizer prop, ObjectFactory objectFactory);
 }
