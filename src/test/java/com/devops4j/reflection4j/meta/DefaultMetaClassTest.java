@@ -93,7 +93,7 @@ public class DefaultMetaClassTest {
     @Test
     public void test1() throws Throwable {
         MetaClass metaClass = new DefaultMetaClass(DemoBean.class, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
-        Invoker invoker = metaClass.getGetter("name");
+        Invoker invoker = metaClass.getGetter("col");
         DemoBean demoBean = new DemoBean();
         demoBean.setCol("xxxx");
         String name = invoker.invoke(demoBean);
