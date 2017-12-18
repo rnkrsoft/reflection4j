@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.devops4j.reflection4j</groupId>
     <artifactId>reflection4j</artifactId>
-    <version>1.0.0-beta3</version>
+    <version>1.0.0-beta4</version>
     <name>reflection4j</name>
     <description>this is devops4j of reflection library!</description>
     <url>https://github.com/devops4j</url>
@@ -26,6 +26,7 @@
         <log4j2.version>2.7</log4j2.version>
         <log4j-over-slf4j.version>1.7.5</log4j-over-slf4j.version>
         <disruptor.version>3.3.5</disruptor.version>
+        <logtrace4j.version>1.0.0-beta5</logtrace4j.version>
     </properties>
     <scm>
         <connection>git@github.com:devops4j/reflection4j.git</connection>
@@ -36,7 +37,7 @@
         <dependency>
             <groupId>com.devops4j.logtrace4j</groupId>
             <artifactId>logtrace4j</artifactId>
-            <version>1.0.0-beta4</version>
+            <version>${logtrace4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
