@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.devops4j.reflection4j</groupId>
     <artifactId>reflection4j</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-RC</version>
     <name>reflection4j</name>
     <description>this is devops4j of reflection library!</description>
     <url>https://github.com/devops4j</url>
@@ -26,7 +26,7 @@
         <log4j2.version>2.7</log4j2.version>
         <log4j-over-slf4j.version>1.7.5</log4j-over-slf4j.version>
         <disruptor.version>3.3.5</disruptor.version>
-        <logtrace4j.version>1.0.0-SNAPSHOT</logtrace4j.version>
+        <logtrace4j.version>1.0.0-RC</logtrace4j.version>
     </properties>
     <scm>
         <connection>git@github.com:devops4j/reflection4j.git</connection>
