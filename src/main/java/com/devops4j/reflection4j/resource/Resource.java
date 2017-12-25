@@ -24,7 +24,7 @@ public class Resource {
     }
 
     public URL url(String src) {
-        return url(src, classLoader == null ? this.classLoader : classLoader);
+        return url(src, this.classLoader == null ? this.classLoader : Thread.currentThread().getContextClassLoader());
     }
 
     public URL url(String src, ClassLoader classLoader) {
