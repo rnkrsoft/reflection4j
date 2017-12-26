@@ -1,6 +1,7 @@
 package com.devops4j.reflection4j.resource;
 
 import com.devops4j.logtrace4j.ErrorContextFactory;
+import com.devops4j.message.MessageFormatter;
 
 import java.io.*;
 import java.net.URL;
@@ -23,21 +24,19 @@ public class Resource {
         this(Thread.currentThread().getContextClassLoader());
     }
 
-    public URL url(String src) {
+    public URL url(String src) throws FileNotFoundException {
         return url(src, this.classLoader == null ? this.classLoader : Thread.currentThread().getContextClassLoader());
     }
 
-    public URL url(String src, ClassLoader classLoader) {
+    public URL url(String src, ClassLoader classLoader) throws FileNotFoundException {
         if (!src.startsWith(CLASSPATH_ALL_URL_PREFIX)) {
-            ErrorContextFactory.instance().message("文件'{}'不是有效的classpath*资源访问", src).throwError();
-            return null;
+            throw new IllegalArgumentException(MessageFormatter.format("文件'{}'不是有效的classpath*资源访问", src));
         }
         String temp = deleteClassPathStar(src);
         String file = convertPackageToPath(temp);
         URL url = classLoader.getResource(file);
         if (url == null) {
-            ErrorContextFactory.instance().message("文件'{}'不存在", src).throwError();
-            return null;
+            throw new FileNotFoundException(src + " is not found!");
         }
         return url;
     }
