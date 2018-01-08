@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.devops4j.reflection4j</groupId>
     <artifactId>reflection4j</artifactId>
-    <version>1.0.0-RC2</version>
+    <version>1.0.0-RC3</version>
     <name>reflection4j</name>
     <description>this is devops4j of reflection library!</description>
     <url>https://github.com/devops4j</url>
