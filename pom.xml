@@ -26,7 +26,7 @@
         <log4j2.version>2.7</log4j2.version>
         <log4j-over-slf4j.version>1.7.5</log4j-over-slf4j.version>
         <disruptor.version>3.3.5</disruptor.version>
-        <logtrace4j.version>1.0.0-RC</logtrace4j.version>
+        <logtrace4j.version>1.0.0-RC2</logtrace4j.version>
     </properties>
     <scm>
         <connection>git@github.com:devops4j/reflection4j.git</connection>
