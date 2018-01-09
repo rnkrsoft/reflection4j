@@ -22,7 +22,7 @@ public class DefaultReflectorFactory implements ReflectorFactory {
         this.classCacheEnabled = classCacheEnabled;
     }
 
-    public Reflector findForClass(Class<?> type) {
+    public Reflector reflector(Class<?> type) {
         if (classCacheEnabled) {
             // synchronized (type) removed see issue #461
             Reflector cached = reflectorMap.get(type);

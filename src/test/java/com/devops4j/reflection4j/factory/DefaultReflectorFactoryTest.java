@@ -30,7 +30,7 @@ public class DefaultReflectorFactoryTest {
     @Test
     public void testFindForClass() throws Throwable{
         ReflectorFactory factory = new DefaultReflectorFactory();
-        Reflector reflector = factory.findForClass(DemoBean.class);
+        Reflector reflector = factory.reflector(DemoBean.class);
         DemoBean demoBean = new DemoBean();
         demoBean.setName("xxx");
         demoBean.setAge(23);

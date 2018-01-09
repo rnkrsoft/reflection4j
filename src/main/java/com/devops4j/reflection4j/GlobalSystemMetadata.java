@@ -44,7 +44,7 @@ public abstract class GlobalSystemMetadata {
      * @return 反射器
      */
     public static Reflector reflector(Class<?> type){
-        return REFLECTOR_FACTORY.findForClass(type);
+        return REFLECTOR_FACTORY.reflector(type);
     }
     
     /**

@@ -21,7 +21,7 @@ public class DefaultMetaClass implements MetaClass {
 
     public DefaultMetaClass(Class<?> type, ReflectorFactory reflectorFactory, MetaClassFactory metaClassFactory) {
         this.reflectorFactory = reflectorFactory;
-        this.reflector = reflectorFactory.findForClass(type);
+        this.reflector = reflectorFactory.reflector(type);
         this.metaClassFactory = metaClassFactory;
     }
     MetaClass metaClassForProperty(PropertyTokenizer prop){
