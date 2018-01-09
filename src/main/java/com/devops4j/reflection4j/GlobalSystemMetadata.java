@@ -41,6 +41,14 @@ public abstract class GlobalSystemMetadata {
     }
 
     /**
+     * 创建反射器
+     * @param type 类型
+     * @return 反射器
+     */
+    public static Reflector reflector(Class<?> type){
+        return REFLECTOR_FACTORY.findForClass(type);
+    }
+    /**
      * 创建实例
      * @param type 类型
      * @param <T>  实例
