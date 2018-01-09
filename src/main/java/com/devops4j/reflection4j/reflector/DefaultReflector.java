@@ -408,5 +408,8 @@ public class DefaultReflector implements Reflector {
         return fields.get(propertyName);
     }
 
+    public List<Field> getFields() {
+        return Collections.unmodifiableList(new ArrayList(fields.values()));
+    }
 
 }

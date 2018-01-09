@@ -90,8 +90,4 @@ public abstract class GlobalSystemMetadata {
         Class type = TYPE_ALIAS_REGISTRY.resolveAlias(alias);
         return (T) OBJECT_FACTORY.create(type, constructorArgTypes, constructorArgs);
     }
-
-    public static Reflector reflector(Class clazz){
-        return REFLECTOR_FACTORY.findForClass(clazz);
-    }
 }
