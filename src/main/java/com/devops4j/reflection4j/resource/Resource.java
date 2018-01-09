@@ -15,11 +15,17 @@ import static com.devops4j.reflection4j.Utils.*;
  */
 public class Resource {
 
-    public URL url(String src) {
-        return url(src, Thread.currentThread().getContextClassLoader());
+    ClassLoader classLoader;
+
+    public Resource(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
-    public URL url(String src, ClassLoader classLoader) {
+    public Resource(){
+        this(Thread.currentThread().getContextClassLoader());
+    }
+
+    public URL url(String src) {
         if (!src.startsWith(CLASSPATH_ALL_URL_PREFIX)) {
             throw ErrorContextFactory.instance().message("文件'{}'不是有效的classpath*资源访问", src).runtimeException();
         }
@@ -33,7 +39,7 @@ public class Resource {
     }
 
     public byte[] readFileToByteArray(String src) throws IOException {
-        InputStream is = url(src, Thread.currentThread().getContextClassLoader()).openStream();
+        InputStream is = url(src).openStream();
         try {
             byte[] data = readFully(is, is.available());
             return data;
