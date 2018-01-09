@@ -191,7 +191,6 @@
                             <encoding>${sourceEncoding}</encoding>
                             <compilerArguments>
                                 <verbose/>
-                                <bootclasspath>${java.home}\lib\rt.jar;${java.home}\lib\jce.jar</bootclasspath>
                             </compilerArguments>
                         </configuration>
                     </plugin>
