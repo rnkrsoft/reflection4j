@@ -1,6 +1,9 @@
 package com.devops4j.reflection4j.factory;
 
-import com.devops4j.reflection4j.*;
+import com.devops4j.reflection4j.MetaObject;
+import com.devops4j.reflection4j.ObjectFactory;
+import com.devops4j.reflection4j.ObjectWrapperFactory;
+import com.devops4j.reflection4j.ReflectorFactory;
 import com.devops4j.reflection4j.meta.DefaultMetaObject;
 import lombok.Getter;
 
@@ -24,11 +27,7 @@ public class MetaObjectFactory {
         this.metaClassFactory = metaClassFactory;
     }
 
-    public MetaObject forObject(Object object) {
-        if (object == null) {
-            return GlobalSystemMetadata.NULL_META_OBJECT;
-        }else {
-            return new DefaultMetaObject(object, objectFactory, objectWrapperFactory, reflectorFactory, metaClassFactory, this);
-        }
+    public MetaObject forObject(String propertyName, Class type, Object object) {
+        return new DefaultMetaObject(propertyName, type, object, objectFactory, objectWrapperFactory, reflectorFactory, metaClassFactory, this);
     }
 }

@@ -11,6 +11,12 @@ import java.util.List;
  * 用于对实体类进行包装，提供字段、方法的元信息
  */
 public interface MetaObject {
+    Class getType();
+    /**
+     * 获取当前值对象的完整名称，与PropertyTokenizer格式一致
+     * @return
+     */
+    String getFullName();
     /**
      * 返回是否有Getter方法
      *
@@ -97,7 +103,7 @@ public interface MetaObject {
      * 获取包装的对象
      * @return 原生对象
      */
-    <T> T getObject();
+    <T> Object getObject();
 
     boolean isCollection();
 

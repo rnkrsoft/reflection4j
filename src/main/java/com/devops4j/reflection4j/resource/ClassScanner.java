@@ -158,12 +158,10 @@ public class ClassScanner {
      */
     public ClassScanner scan(String _package, ClassLoader classLoader, Filter filter) {
         if (_package == null || _package.isEmpty()) {
-            ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径为空").throwError();
-            return this;
+            throw ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径为空").runtimeException();
         }
         if (_package.indexOf("/") != -1) {
-            ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径'{}'不能包含/", _package).throwError();
-            return this;
+            throw ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径'{}'不能包含/", _package).runtimeException();
         }
 
         String _dir = _package.replace('.', '/');
@@ -225,8 +223,7 @@ public class ClassScanner {
 
             }
         } catch (IOException e) {
-            ErrorContextFactory.instance().message("扫描JAR文件'{}'发生错误", url).throwError();
-            return;
+            throw ErrorContextFactory.instance().message("扫描JAR文件'{}'发生错误", url).runtimeException();
         }
         ErrorContextFactory.instance().activity("");
     }

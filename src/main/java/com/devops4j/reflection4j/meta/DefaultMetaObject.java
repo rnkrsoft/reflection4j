@@ -7,9 +7,9 @@ import com.devops4j.reflection4j.property.PropertyTokenizer;
 import com.devops4j.reflection4j.wrapper.BeanWrapper;
 import com.devops4j.reflection4j.wrapper.CollectionWrapper;
 import com.devops4j.reflection4j.wrapper.MapWrapper;
-import com.devops4j.logtrace4j.ErrorContextFactory;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,8 @@ import java.util.Map;
  * Created by devops4j on 2017/6/19.
  */
 public class DefaultMetaObject implements MetaObject {
+    @Getter
+    String fullName;
     @Getter
     Object object;
     @Getter
@@ -35,29 +37,26 @@ public class DefaultMetaObject implements MetaObject {
     @Getter
     MetaObjectFactory metaObjectFactory;
 
-    public DefaultMetaObject(Object object, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory, MetaClassFactory metaClassFactory,MetaObjectFactory metaObjectFactory) {
-        if (object == null) {
-            ErrorContextFactory.instance().activity("创建对象元信息对象").message("对象为null,无法创建元信息对象").throwError();
-            return;
-        }
+    public DefaultMetaObject(String fullName, Class type, Object object, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory, MetaClassFactory metaClassFactory, MetaObjectFactory metaObjectFactory) {
+        this.fullName = fullName;
         this.object = object;
-        this.type = this.object.getClass();
+        this.type = type;
         this.objectFactory = objectFactory;
         this.objectWrapperFactory = objectWrapperFactory;
         this.reflectorFactory = reflectorFactory;
         this.metaClassFactory = metaClassFactory;
         this.metaObjectFactory = metaObjectFactory;
 
-        if (object instanceof ObjectWrapper) {
+        if (type.isAssignableFrom(ObjectWrapper.class)) {
             this.objectWrapper = (ObjectWrapper) object;
         } else if (objectWrapperFactory.hasWrapperFor(object)) {
             this.objectWrapper = objectWrapperFactory.getWrapperFor(this, object);
-        } else if (object instanceof Map) {
-            this.objectWrapper = new MapWrapper(this, (Map) object);
-        } else if (object instanceof Collection) {
-            this.objectWrapper = new CollectionWrapper(this, (Collection) object);
+        } else if (type.isAssignableFrom(Map.class)) {
+            this.objectWrapper = new MapWrapper(type, this, (Map) object);
+        } else if (type.isAssignableFrom(Collection.class)) {
+            this.objectWrapper = new CollectionWrapper(type, this, (Collection) object);
         } else {
-            this.objectWrapper = new BeanWrapper(this, object, metaClassFactory, metaObjectFactory);
+            this.objectWrapper = new BeanWrapper(type, this, object, metaClassFactory, metaObjectFactory);
         }
     }
 
@@ -74,7 +73,7 @@ public class DefaultMetaObject implements MetaObject {
         if (prop.hasNext()) {
             String indexedName = prop.getIndexedName();
             MetaObject metaValue = metaObjectForProperty(indexedName);
-            if (metaValue == GlobalSystemMetadata.NULL_META_OBJECT) {
+            if (metaValue.getObject() == null) {
                 if (value == null && prop.getChildren() != null) {
                     // don't instantiate child path if value is null
                     return;
@@ -131,21 +130,6 @@ public class DefaultMetaObject implements MetaObject {
         return objectWrapper.isCollection();
     }
 
-    public MetaObject metaObjectForProperty(String propertyName) {
-        PropertyTokenizer prop = new PropertyTokenizer(propertyName);
-        if (prop.hasNext()) {
-            String indexedName = prop.getIndexedName();
-            MetaObject metaObject = metaObjectForProperty(indexedName);
-            if (metaObject == GlobalSystemMetadata.NULL_META_OBJECT) {
-                return metaObject;
-            } else {
-                return metaObject.metaObjectForProperty(prop.getChildren());
-            }
-        } else {
-            Object object = objectWrapper.get(prop);
-            return metaObjectFactory.forObject(object);
-        }
-    }
 
     public MetaClass metaClassForProperty(String propertyName) {
         return getMetaClass().metaClassForProperty(propertyName);
@@ -165,19 +149,65 @@ public class DefaultMetaObject implements MetaObject {
         objectWrapper.add(element);
     }
 
-    public MetaObject instantiatePropertyValue(String propertyName) {
+    public MetaObject metaObjectForProperty(String propertyName) {
+        return metaObjectForProperty(new ArrayList(), propertyName);
+    }
+
+    MetaObject metaObjectForProperty(List<String> parents, String propertyName) {
         PropertyTokenizer prop = new PropertyTokenizer(propertyName);
         if (prop.hasNext()) {
             String indexedName = prop.getIndexedName();
-            MetaObject metaObject = metaObjectForProperty(indexedName);
-            if (metaObject == GlobalSystemMetadata.NULL_META_OBJECT) {
-                return objectWrapper.instantiatePropertyValue(prop, objectFactory);
+            DefaultMetaObject metaObject = (DefaultMetaObject) metaObjectForProperty(parents, indexedName);
+            if (metaObject.getObject() == null) {
+                return metaObject;
             } else {
-                return metaObject.metaObjectForProperty(prop.getChildren());
+                return metaObject.metaObjectForProperty(parents, prop.getChildren());
             }
         } else {
+            parents.add(prop.getName());
             Object object = objectWrapper.get(prop);
-            return metaObjectFactory.forObject(object);
+            Class type0 = objectWrapper.getSetterType(prop.getName());
+            if (type0 == null) {
+                type0 = Object.class;
+            }
+            return metaObjectFactory.forObject(convertPathName(parents), type0, object);
+        }
+    }
+
+    String convertPathName(List<String> parents) {
+        StringBuilder path = new StringBuilder();
+        for (int i = 0; i < parents.size(); i++) {
+            String name = parents.get(i);
+            if (i != 0) {
+                path.append(".");
+            }
+            path.append(name);
+        }
+        return path.toString();
+    }
+
+    public MetaObject instantiatePropertyValue(String propertyName) {
+        return instantiatePropertyValue(new ArrayList(), propertyName);
+    }
+
+    MetaObject instantiatePropertyValue(List<String> parents, String propertyName) {
+        PropertyTokenizer prop = new PropertyTokenizer(propertyName);
+        if (prop.hasNext()) {
+            String indexedName = prop.getIndexedName();
+            DefaultMetaObject metaObject = (DefaultMetaObject) metaObjectForProperty(parents, indexedName);
+            if (metaObject.getObject() == null) {
+                return objectWrapper.instantiatePropertyValue(prop, objectFactory);
+            } else {
+                return metaObject.metaObjectForProperty(parents, prop.getChildren());
+            }
+        } else {
+            parents.add(prop.getName());
+            Object object = objectWrapper.get(prop);
+            Class type0 = objectWrapper.getSetterType(prop.getName());
+            if (type0 == null) {
+                type0 = Object.class;
+            }
+            return metaObjectFactory.forObject(convertPathName(parents), type0, object);
         }
     }
 }

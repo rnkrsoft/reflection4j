@@ -12,8 +12,7 @@ public class DefaultObjectWrapperFactory implements ObjectWrapperFactory {
     }
 
     public ObjectWrapper getWrapperFor(MetaObject metaObject, Object object) {
-        ErrorContextFactory.instance().message("The DefaultObjectWrapperFactory should never be called to provide an ObjectWrapper.").throwError();
-        return null;
+        throw ErrorContextFactory.instance().message("The DefaultObjectWrapperFactory should never be called to provide an ObjectWrapper.").runtimeException();
     }
 
 }

@@ -27,8 +27,7 @@ public final class PropertyNamer {
         } else if (name.startsWith("get") || name.startsWith("set")) {
             name = name.substring(3);
         } else {
-            ErrorContextFactory.instance().message("Error parsing property name '{}'.  Didn't start with 'is', 'get' or 'set'.", name).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("Error parsing property name '{}'.  Didn't start with 'is', 'get' or 'set'.", name).runtimeException();
         }
         name = Utils.toFirstLowerCase(name);
         return name;

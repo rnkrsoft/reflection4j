@@ -90,8 +90,7 @@ public class DefaultTypeAliasRegistry implements TypeAliasRegistry {
             }
             return value;
         } catch (ClassNotFoundException e) {
-            ErrorContextFactory.instance().message("Could not resolve type alias '{}'", string).cause(e).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("Could not resolve type alias '{}'", string).cause(e).runtimeException();
         }
     }
 
@@ -119,14 +118,12 @@ public class DefaultTypeAliasRegistry implements TypeAliasRegistry {
 
     public void registerAlias(String alias, Class<?> value) {
         if (alias == null) {
-            ErrorContextFactory.instance().message("The parameter alias cannot be null").throwError();
-            return;
+           throw  ErrorContextFactory.instance().message("The parameter alias cannot be null").runtimeException();
         }
         // issue #748
         String key = alias.toLowerCase(Locale.ENGLISH);
         if (TYPE_ALIASES.containsKey(key) && TYPE_ALIASES.get(key) != null && !TYPE_ALIASES.get(key).equals(value)) {
-            ErrorContextFactory.instance().message("The alias '{}' is already mapped to the value '{}'.", alias, TYPE_ALIASES.get(key).getName()).throwError();
-            return;
+            throw  ErrorContextFactory.instance().message("The alias '{}' is already mapped to the value '{}'.", alias, TYPE_ALIASES.get(key).getName()).runtimeException();
         }
         TYPE_ALIASES.put(key, value);
     }
@@ -135,8 +132,7 @@ public class DefaultTypeAliasRegistry implements TypeAliasRegistry {
         try {
             registerAlias(alias, Class.forName(value));
         } catch (ClassNotFoundException e) {
-            ErrorContextFactory.instance().message("Error registering type alias {} for {}.", alias, value).cause(e).throwError();
-            return;
+            throw ErrorContextFactory.instance().message("Error registering type alias {} for {}.", alias, value).cause(e).runtimeException();
         }
     }
 

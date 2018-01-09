@@ -29,5 +29,10 @@ public class PropertyTokenizerTest {
         Assert.assertEquals("fieldName2", tokenizer.getChildren());
         Assert.assertEquals("1", tokenizer.getIndex());
         Assert.assertEquals("fieldName1[1]", tokenizer.getIndexedName());
+        tokenizer = tokenizer.next();
+        Assert.assertEquals("fieldName2", tokenizer.getName());
+        Assert.assertEquals(null, tokenizer.getChildren());
+        Assert.assertEquals(null, tokenizer.getIndex());
+        Assert.assertEquals("fieldName2", tokenizer.getIndexedName());
     }
 }

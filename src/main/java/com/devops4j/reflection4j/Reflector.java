@@ -3,7 +3,6 @@ package com.devops4j.reflection4j;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by devops4j on 2017/5/28.
@@ -24,11 +23,12 @@ public interface Reflector {
     Constructor getDefaultConstructor();
 
     /**
-     * 是否存在无参构造函数
+     * 是否存在午餐
      *
      * @return
      */
     boolean hasDefaultConstructor();
+
     /**
      * 获取方法执行器
      * @param name 方法名
@@ -100,20 +100,15 @@ public interface Reflector {
 
     /**
      * 检测是否存在属性
-     * @param propertyName 属性名
+     * @param propertyName
      * @return
      */
     boolean hasProperty(String propertyName);
 
     /**
-     * 获取指定属性名得字段
+     * 根据属性名获取Field对象
      * @param propertyName 属性名
-     * @return 字段
+     * @return Field对象
      */
-    Field getProperty(String propertyName);
-    /**
-     * 获取类得字段
-     * @return 字段
-     */
-    List<Field> getProperties();
+    Field getField(String propertyName);
 }

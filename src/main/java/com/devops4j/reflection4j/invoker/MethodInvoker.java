@@ -41,8 +41,7 @@ public class MethodInvoker implements Invoker {
     public <T> T invoke(Object target, Object... args) throws Exception {
         try {
             if (args.length != paramsClass.length) {
-                ErrorContextFactory.instance().message("参数实际个数{}与定义个数{}不一致", args.length, paramsClass.length).throwError();
-                return null;
+                throw ErrorContextFactory.instance().message("参数实际个数{}与定义个数{}不一致", args.length, paramsClass.length).runtimeException();
             }
             Object[] args1 = new Object[args.length];
             for (int i = 0; i < args.length; i++) {

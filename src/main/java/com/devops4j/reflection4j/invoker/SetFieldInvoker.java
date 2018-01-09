@@ -1,7 +1,7 @@
 package com.devops4j.reflection4j.invoker;
 
-import com.devops4j.reflection4j.Invoker;
 import com.devops4j.logtrace4j.ErrorContextFactory;
+import com.devops4j.reflection4j.Invoker;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -18,16 +18,14 @@ public class SetFieldInvoker implements Invoker {
 
     public Object invoke(Object target, Object... args) throws Exception {
         if (args.length != 1) {
-            ErrorContextFactory.instance().message("参数只能为1个值!").throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("参数只能为1个值!").runtimeException();
         }
         field.set(target, args[0]);
         return null;
     }
 
     public <T> T invoke(Object target, Map<String, Object> args) throws Exception {
-        ErrorContextFactory.instance().message("该执行器不支持该方式调用!").throwError();
-        return null;
+        throw ErrorContextFactory.instance().message("该执行器不支持该方式调用!").runtimeException();
     }
 
     public Class<?> getReturnClass() {

@@ -1,11 +1,11 @@
 package com.devops4j.reflection4j.meta;
 
+import com.devops4j.logtrace4j.ErrorContextFactory;
 import com.devops4j.reflection4j.*;
 import com.devops4j.reflection4j.factory.MetaClassFactory;
 import com.devops4j.reflection4j.invoker.GetFieldInvoker;
 import com.devops4j.reflection4j.invoker.MethodInvoker;
 import com.devops4j.reflection4j.property.PropertyTokenizer;
-import com.devops4j.logtrace4j.ErrorContextFactory;
 
 import java.lang.reflect.*;
 import java.util.Collection;
@@ -143,14 +143,11 @@ public class DefaultMetaClass implements MetaClass {
         try {
             return (T) reflector.getDefaultConstructor().newInstance();
         } catch (InstantiationException e) {
-            ErrorContextFactory.instance().message("构建实例发生错误,因为该类为不能实例化的类").solution("修改类'{}'为可实现的类,不能为接口,抽象类", reflector.getType()).cause(e).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("构建实例发生错误,因为该类为不能实例化的类").solution("修改类'{}'为可实现的类,不能为接口,抽象类", reflector.getType()).cause(e).runtimeException();
         } catch (IllegalAccessException e) {
-            ErrorContextFactory.instance().message("构建实例发生错误,因为该类的构造方法不能访问").solution("修改类'{}'有public的无参构造函数", reflector.getType()).cause(e).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("构建实例发生错误,因为该类的构造方法不能访问").solution("修改类'{}'有public的无参构造函数", reflector.getType()).cause(e).runtimeException();
         } catch (InvocationTargetException e) {
-            ErrorContextFactory.instance().message("构建实例发生错误,因为该类的无参构造中抛出了异常").solution("检查类'{}'的public无参构造函数中构造条件", reflector.getType()).cause(e.getTargetException()).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("构建实例发生错误,因为该类的无参构造中抛出了异常").solution("检查类'{}'的public无参构造函数中构造条件", reflector.getType()).cause(e.getTargetException()).runtimeException();
         } finally {
             ErrorContextFactory.instance().activity(null);
         }
@@ -224,8 +221,7 @@ public class DefaultMetaClass implements MetaClass {
                 if (reflector.hasProperty(propertyName0)) {
                     builder.append(propertyName0);
                 } else {
-                    ErrorContextFactory.instance().message("类'{}'不存在属性'{}'", reflector.getType(), propertyName).throwError();
-                    return null;
+                    throw ErrorContextFactory.instance().message("类'{}'不存在属性'{}'", reflector.getType(), propertyName).runtimeException();
                 }
             }
 

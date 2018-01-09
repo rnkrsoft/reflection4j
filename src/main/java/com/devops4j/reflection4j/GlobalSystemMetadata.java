@@ -2,6 +2,7 @@ package com.devops4j.reflection4j;
 
 import com.devops4j.reflection4j.factory.*;
 import com.devops4j.reflection4j.registry.DefaultTypeAliasRegistry;
+import com.devops4j.reflection4j.wrapper.NullObject;
 
 /**
  * 全局系统元信息
@@ -13,13 +14,10 @@ public abstract class GlobalSystemMetadata {
     public static final TypeAliasRegistry TYPE_ALIAS_REGISTRY = new DefaultTypeAliasRegistry();
     public static final MetaClassFactory META_CLASS_FACTORY = new MetaClassFactory(REFLECTOR_FACTORY);
     public static final MetaObjectFactory META_OBJECT_FACTORY = new MetaObjectFactory(OBJECT_FACTORY, OBJECT_WRAPPER_FACTORY, REFLECTOR_FACTORY, META_CLASS_FACTORY);
-    public static final MetaObject NULL_META_OBJECT = META_OBJECT_FACTORY.forObject(NullObject.class);
+    public static final MetaClass NULL_META_CLASS = META_CLASS_FACTORY.forClass(NullObject.class);
 
     private GlobalSystemMetadata() {
         // Prevent Instantiation of Static Class
-    }
-
-    private static class NullObject {
     }
 
     /**
@@ -27,8 +25,9 @@ public abstract class GlobalSystemMetadata {
      * @param object 对象
      * @return 对象元信息
      */
-    public static MetaObject forObject(Object object) {
-        return META_OBJECT_FACTORY.forObject(object);
+    public static MetaObject forObject(Class type, Object object) {
+        //从名称为""开始构建，
+        return META_OBJECT_FACTORY.forObject("",type, object);
     }
 
     /**
@@ -40,14 +39,6 @@ public abstract class GlobalSystemMetadata {
         return META_CLASS_FACTORY.forClass(type);
     }
 
-    /**
-     * 创建反射器
-     * @param type 类型
-     * @return 反射器
-     */
-    public static Reflector reflector(Class<?> type){
-        return REFLECTOR_FACTORY.findForClass(type);
-    }
     /**
      * 创建实例
      * @param type 类型
@@ -90,5 +81,9 @@ public abstract class GlobalSystemMetadata {
     public static <T> T create(String alias, Class[] constructorArgTypes, Object[] constructorArgs){
         Class type = TYPE_ALIAS_REGISTRY.resolveAlias(alias);
         return (T) OBJECT_FACTORY.create(type, constructorArgTypes, constructorArgs);
+    }
+
+    public static Reflector reflector(Class clazz){
+        return REFLECTOR_FACTORY.findForClass(clazz);
     }
 }
