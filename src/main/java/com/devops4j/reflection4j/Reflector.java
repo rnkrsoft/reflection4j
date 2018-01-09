@@ -24,7 +24,7 @@ public interface Reflector {
     Constructor getDefaultConstructor();
 
     /**
-     * 是否存在午餐
+     * 是否存在无参构造函数
      *
      * @return
      */
