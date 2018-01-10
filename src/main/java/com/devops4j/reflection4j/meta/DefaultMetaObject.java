@@ -47,13 +47,13 @@ public class DefaultMetaObject implements MetaObject {
         this.metaClassFactory = metaClassFactory;
         this.metaObjectFactory = metaObjectFactory;
 
-        if (type.isAssignableFrom(ObjectWrapper.class)) {
+        if (ObjectWrapper.class.isAssignableFrom(type)) {
             this.objectWrapper = (ObjectWrapper) object;
         } else if (objectWrapperFactory.hasWrapperFor(object)) {
             this.objectWrapper = objectWrapperFactory.getWrapperFor(this, object);
-        } else if (type.isAssignableFrom(Map.class)) {
+        } else if (Map.class.isAssignableFrom(type)) {
             this.objectWrapper = new MapWrapper(type, this, (Map) object);
-        } else if (type.isAssignableFrom(Collection.class)) {
+        } else if (Collection.class.isAssignableFrom(type)) {
             this.objectWrapper = new CollectionWrapper(type, this, (Collection) object);
         } else {
             this.objectWrapper = new BeanWrapper(type, this, object, metaClassFactory, metaObjectFactory);
