@@ -27,6 +27,7 @@ public class DefaultReflector implements Reflector {
     Map<String, Class<?>> setTypes = new HashMap();
     Map<String, Class<?>> getTypes = new HashMap();
     Map<String, Field> fields = new HashMap();
+    List<Field> orderFields = new ArrayList();
     Constructor<?> defaultConstructor;
 
     static {
@@ -233,6 +234,7 @@ public class DefaultReflector implements Reflector {
                     addGetField(field);
                 }
                 this.fields.put(field.getName(), field);
+                this.orderFields.add(field);
             }
         }
         //将父类的属性加入
@@ -409,7 +411,7 @@ public class DefaultReflector implements Reflector {
     }
 
     public List<Field> getFields() {
-        return Collections.unmodifiableList(new ArrayList(fields.values()));
+        return Collections.unmodifiableList(new ArrayList(orderFields));
     }
 
 }
