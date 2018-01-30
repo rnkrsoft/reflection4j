@@ -8,11 +8,12 @@ import com.devops4j.reflection4j.property.PropertyTokenizer;
 import java.util.Collection;
 import java.util.List;
 
-public class CollectionWrapper implements ObjectWrapper {
+public class CollectionWrapper extends  BaseWrapper implements ObjectWrapper {
 
     private Collection<Object> object;
 
-    public CollectionWrapper(MetaObject metaObject, Collection<Object> object) {
+    public CollectionWrapper(Class type, MetaObject metaObject, Collection<Object> object) {
+        super(type, metaObject);
         this.object = object;
     }
 

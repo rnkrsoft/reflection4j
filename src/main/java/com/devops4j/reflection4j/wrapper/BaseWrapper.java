@@ -9,12 +9,17 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BaseWrapper implements ObjectWrapper {
-
+    protected Class type;
     protected static final Object[] NO_ARGUMENTS = new Object[0];
     protected MetaObject metaObject;
 
-    protected BaseWrapper(MetaObject metaObject) {
+    protected BaseWrapper(Class type, MetaObject metaObject) {
+        this.type = type;
         this.metaObject = metaObject;
+    }
+
+    public Class getType() {
+        return type;
     }
 
     protected Object resolveCollection(PropertyTokenizer prop, Object object) {
@@ -51,8 +56,7 @@ public abstract class BaseWrapper implements ObjectWrapper {
             } else if (collection instanceof short[]) {
                 return ((short[]) collection)[i];
             } else {
-                ErrorContextFactory.instance().message("The '{}' property of {} is not a List or Array.", prop.getName(), collection).throwError();
-                return null;
+                throw ErrorContextFactory.instance().message("The '{}' property of {} is not a List or Array.", prop.getName(), collection).runtimeException();
             }
         }
     }
@@ -83,8 +87,7 @@ public abstract class BaseWrapper implements ObjectWrapper {
             } else if (collection instanceof short[]) {
                 ((short[]) collection)[i] = (Short) value;
             } else {
-                ErrorContextFactory.instance().message("The '{}' property of {} is not a List or Array.", prop.getName(), collection).throwError();
-                return;
+                throw ErrorContextFactory.instance().message("The '{}' property of {} is not a List or Array.", prop.getName(), collection).runtimeException();
             }
         }
     }

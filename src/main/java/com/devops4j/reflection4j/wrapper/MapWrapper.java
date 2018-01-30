@@ -1,8 +1,8 @@
 package com.devops4j.reflection4j.wrapper;
 
-import com.devops4j.reflection4j.meta.DefaultMetaObject;
 import com.devops4j.reflection4j.MetaObject;
 import com.devops4j.reflection4j.ObjectFactory;
+import com.devops4j.reflection4j.meta.DefaultMetaObject;
 import com.devops4j.reflection4j.property.PropertyTokenizer;
 
 import java.util.Collection;
@@ -14,8 +14,8 @@ public class MapWrapper extends BaseWrapper {
 
     private Map<String, Object> map;
 
-    public MapWrapper(MetaObject metaObject, Map<String, Object> map) {
-        super(metaObject);
+    public MapWrapper(Class type, MetaObject metaObject, Map<String, Object> map) {
+        super(type, metaObject);
         this.map = map;
     }
 
@@ -50,63 +50,18 @@ public class MapWrapper extends BaseWrapper {
     }
 
     public Class<?> getSetterType(String name) {
-        PropertyTokenizer prop = new PropertyTokenizer(name);
-//    if (prop.hasNext()) {
-//      MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//      if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//        return Object.class;
-//      } else {
-//        return metaValue.getSetterType(prop.getChildren());
-//      }
-//    } else {
-//      if (map.get(name) != null) {
-//        return map.get(name).getClass();
-//      } else {
-//        return Object.class;
-//      }
-//    }
         return null;
     }
 
     public Class<?> getGetterType(String name) {
-//    PropertyTokenizer prop = new PropertyTokenizer(name);
-//    if (prop.hasNext()) {
-//      MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//      if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//        return Object.class;
-//      } else {
-//        return metaValue.getGetterType(prop.getChildren());
-//      }
-//    } else {
-//      if (map.get(name) != null) {
-//        return map.get(name).getClass();
-//      } else {
-//        return Object.class;
-//      }
-//    }
         return null;
     }
 
     public boolean hasSetter(String name) {
-        return true;
+        return false;
     }
 
     public boolean hasGetter(String name) {
-//    PropertyTokenizer prop = new PropertyTokenizer(name);
-//    if (prop.hasNext()) {
-//      if (map.containsKey(prop.getIndexedName())) {
-//        MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//        if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//          return true;
-//        } else {
-//          return metaValue.hasGetter(prop.getChildren());
-//        }
-//      } else {
-//        return false;
-//      }
-//    } else {
-//      return map.containsKey(prop.getName());
-//    }
         return false;
     }
 
@@ -128,8 +83,9 @@ public class MapWrapper extends BaseWrapper {
 
     public MetaObject instantiatePropertyValue(PropertyTokenizer prop, ObjectFactory objectFactory) {
         HashMap<String, Object> map = new HashMap<String, Object>();
+        String fullName = metaObject.getFullName() + "." + prop.getName();
         set(prop, map);
-        return new DefaultMetaObject(map, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory(), metaObject.getReflectorFactory(), metaObject.getMetaClassFactory(), metaObject.getMetaObjectFactory());
+        return new DefaultMetaObject(fullName, map.getClass(), map, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory(), metaObject.getReflectorFactory(), metaObject.getMetaClassFactory(), metaObject.getMetaObjectFactory());
     }
 
 }

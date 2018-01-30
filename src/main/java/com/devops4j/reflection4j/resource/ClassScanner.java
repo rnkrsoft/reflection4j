@@ -21,6 +21,7 @@ import java.util.jar.JarFile;
  * 不能扫描Java未配置权限的包，例如java.lang不能访问
  */
 public class ClassScanner {
+    ClassLoader classLoader;
     /**
      * 是否扫描子包
      */
@@ -28,11 +29,18 @@ public class ClassScanner {
 
     final Collection<Class> classes = new LinkedHashSet();
 
-    public ClassScanner(boolean scanSubPackage) {
+    public ClassScanner(ClassLoader classLoader, boolean scanSubPackage) {
+        this.classLoader = classLoader;
         this.scanSubPackage = scanSubPackage;
     }
 
+    public ClassScanner(boolean scanSubPackage) {
+        this(Thread.currentThread().getContextClassLoader(), scanSubPackage);
+    }
+
+
     public ClassScanner() {
+        this(Thread.currentThread().getContextClassLoader(), false);
     }
 
     public interface Filter {
@@ -158,12 +166,10 @@ public class ClassScanner {
      */
     public ClassScanner scan(String _package, ClassLoader classLoader, Filter filter) {
         if (_package == null || _package.isEmpty()) {
-            ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径为空").throwError();
-            return this;
+            throw ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径为空").runtimeException();
         }
         if (_package.indexOf("/") != -1) {
-            ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径'{}'不能包含/", _package).throwError();
-            return this;
+            throw ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径'{}'不能包含/", _package).runtimeException();
         }
 
         String _dir = _package.replace('.', '/');
@@ -211,7 +217,7 @@ public class ClassScanner {
                         if (scanSubPackage ? _path0.startsWith(_dir) : _path0.equals(_dir)) {
                             String _package0 = _path0.replace('/', '.');
                             try {
-                                Class clazz = Class.forName(_package0 + '.' + _className0);
+                                Class clazz = Class.forName(_package0 + '.' + _className0, true, this.classLoader);
                                 if (filter.accept(clazz)) {
                                     classes.add(clazz);
                                 }
@@ -225,8 +231,7 @@ public class ClassScanner {
 
             }
         } catch (IOException e) {
-            ErrorContextFactory.instance().message("扫描JAR文件'{}'发生错误", url).throwError();
-            return;
+            throw ErrorContextFactory.instance().message("扫描JAR文件'{}'发生错误", url).runtimeException();
         }
         ErrorContextFactory.instance().activity("");
     }
@@ -251,7 +256,7 @@ public class ClassScanner {
                 String className = file.getName().substring(0, file.getName().length() - 6);
                 try {
                     String className0 = _package + '.' + className;
-                    Class clazz = Thread.currentThread().getContextClassLoader().loadClass(className0);
+                    Class clazz = this.classLoader.loadClass(className0);
                     if (filter.accept(clazz)) {
                         classes.add(clazz);
                     }

@@ -1,12 +1,12 @@
 package com.devops4j.reflection4j.reflector;
 
+import com.devops4j.logtrace4j.ErrorContextFactory;
 import com.devops4j.reflection4j.Invoker;
 import com.devops4j.reflection4j.Reflector;
 import com.devops4j.reflection4j.invoker.GetFieldInvoker;
 import com.devops4j.reflection4j.invoker.MethodInvoker;
 import com.devops4j.reflection4j.invoker.SetFieldInvoker;
 import com.devops4j.reflection4j.property.PropertyNamer;
-import com.devops4j.logtrace4j.ErrorContextFactory;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -27,6 +27,7 @@ public class DefaultReflector implements Reflector {
     Map<String, Class<?>> setTypes = new HashMap();
     Map<String, Class<?>> getTypes = new HashMap();
     Map<String, Field> fields = new HashMap();
+    List<Field> orderFields = new ArrayList();
     Constructor<?> defaultConstructor;
 
     static {
@@ -37,6 +38,15 @@ public class DefaultReflector implements Reflector {
         IGNORE_FIELD.add("value");
         IGNORE_FIELD.add("hash");
         IGNORE_FIELD.add("empty");
+        IGNORE_FIELD.add("BYTES");
+        IGNORE_FIELD.add("DigitTens");
+        IGNORE_FIELD.add("DigitOnes");
+        IGNORE_FIELD.add("sizeTable");
+        IGNORE_FIELD.add("SIZE");
+        IGNORE_FIELD.add("digits");
+        IGNORE_FIELD.add("MAX_VALUE");
+        IGNORE_FIELD.add("MIN_VALUE");
+        IGNORE_FIELD.add("TYPE");
     }
 
     public DefaultReflector(Class<?> clazz) {
@@ -68,10 +78,6 @@ public class DefaultReflector implements Reflector {
                 found = true;
             }
         }
-//        if (!found) {
-//            ErrorContextFactory.instance().message("类'{}'不存在无参构造函数", clazz).solution("类'{}'增加无参构造函数'public {}(){}'", clazz, clazz.getSimpleName(), "{}").throwError();
-//            return;
-//        }
     }
 
     void addGetMethods(Class<?> cls) {
@@ -107,16 +113,14 @@ public class DefaultReflector implements Reflector {
                     Method method = iterator.next();
                     Class<?> methodType = method.getReturnType();
                     if (methodType.equals(getterType)) {
-                        ErrorContextFactory.instance().message("类'{}'中存在冲突的Getter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).throwError();
-                        return;
+                        throw ErrorContextFactory.instance().message("类'{}'中存在冲突的Getter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).runtimeException();
                     } else if (methodType.isAssignableFrom(getterType)) {
                         // OK getter type is descendant
                     } else if (getterType.isAssignableFrom(methodType)) {
                         getter = method;
                         getterType = methodType;
                     } else {
-                        ErrorContextFactory.instance().message("类'{}'中存在冲突的Getter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).throwError();
-                        return;
+                        throw ErrorContextFactory.instance().message("类'{}'中存在冲突的Getter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).runtimeException();
                     }
                 }
                 addGetMethod(propName, getter);
@@ -175,8 +179,7 @@ public class DefaultReflector implements Reflector {
             } else {
                 Class<?> expectedType = getTypes.get(propName);
                 if (expectedType == null) {
-                    ErrorContextFactory.instance().message("类'{}'中存在冲突的Setter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).throwError();
-                    return;
+                    throw ErrorContextFactory.instance().message("类'{}'中存在冲突的Setter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).runtimeException();
                 } else {
                     Iterator<Method> methods = setters.iterator();
                     Method setter = null;
@@ -189,8 +192,7 @@ public class DefaultReflector implements Reflector {
                         }
                     }
                     if (setter == null) {
-                        ErrorContextFactory.instance().message("类'{}'中存在冲突的Setter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).throwError();
-                        return;
+                        throw ErrorContextFactory.instance().message("类'{}'中存在冲突的Setter方法的重载方法'{}'.不符合JavaBean的规范", firstMethod.getDeclaringClass(), propName).runtimeException();
                     }
                     addSetMethod(propName, setter);
                 }
@@ -232,6 +234,7 @@ public class DefaultReflector implements Reflector {
                     addGetField(field);
                 }
                 this.fields.put(field.getName(), field);
+                this.orderFields.add(field);
             }
         }
         //将父类的属性加入
@@ -339,8 +342,7 @@ public class DefaultReflector implements Reflector {
         if (defaultConstructor != null) {
             return defaultConstructor;
         } else {
-            ErrorContextFactory.instance().message("There is no default constructor for {}", type).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("There is no default constructor for {}", type).runtimeException();
         }
     }
 
@@ -355,8 +357,7 @@ public class DefaultReflector implements Reflector {
     public Invoker getSetter(String propertyName) {
         Invoker method = setMethods.get(propertyName);
         if (method == null) {
-            ErrorContextFactory.instance().message("There is no setter for property named '{}' in '{}'", propertyName, type).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("There is no setter for property named '{}' in '{}'", propertyName, type).runtimeException();
         }
         return method;
     }
@@ -364,8 +365,7 @@ public class DefaultReflector implements Reflector {
     public Invoker getGetter(String propertyName) {
         Invoker method = getMethods.get(propertyName);
         if (method == null) {
-            ErrorContextFactory.instance().message("There is no getter for property named '{}' in '{}'", propertyName, type).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("There is no getter for property named '{}' in '{}'", propertyName, type).runtimeException();
         }
         return method;
     }
@@ -373,8 +373,7 @@ public class DefaultReflector implements Reflector {
     public Class<?> getSetterType(String propertyName) {
         Class<?> clazz = setTypes.get(propertyName);
         if (clazz == null) {
-            ErrorContextFactory.instance().message("There is no setter for property named '{}' in '{}'", propertyName, type).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("There is no setter for property named '{}' in '{}'", propertyName, type).runtimeException();
         }
         return clazz;
     }
@@ -382,8 +381,7 @@ public class DefaultReflector implements Reflector {
     public Class<?> getGetterType(String propertyName) {
         Class<?> clazz = getTypes.get(propertyName);
         if (clazz == null) {
-            ErrorContextFactory.instance().message("There is no getter for property named '{}' in '{}'", propertyName, type).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("There is no getter for property named '{}' in '{}'", propertyName, type).runtimeException();
         }
         return clazz;
     }
@@ -408,5 +406,16 @@ public class DefaultReflector implements Reflector {
         return fields.containsKey(propertyName);
     }
 
+    public Field getField(String propertyName) {
+        Field field = fields.get(propertyName);
+        if(field == null){
+            throw ErrorContextFactory.instance().message("There is no field for property named '{}' in '{}'", propertyName, type).runtimeException();
+        }
+        return field;
+    }
+
+    public List<Field> getFields() {
+        return Collections.unmodifiableList(new ArrayList(orderFields));
+    }
 
 }

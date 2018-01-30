@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ObjectWrapper {
+    Class getType();
     /**
      * 根据属性获取值
      *
@@ -108,6 +109,7 @@ public interface ObjectWrapper {
 
     /**
      * 通过属性名实例化属性
+     *
      * @param prop
      * @param objectFactory
      * @return

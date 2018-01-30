@@ -52,6 +52,12 @@ public class DefaultReflectorTest {
         public Section(String name, Long id) {
             super(name, id);
         }
+
+        int age;
+
+        public int getAge() {
+            return age;
+        }
     }
 
     @Test
@@ -59,7 +65,7 @@ public class DefaultReflectorTest {
         Reflector reflector = new DefaultReflector(Section.class);
         Assert.assertEquals(Long.class, reflector.getSetterType("id"));
         System.out.println(reflector.getSettablePropertyNames());
-        Assert.assertEquals(2, reflector.getSettablePropertyNames().size());
+        Assert.assertEquals(3, reflector.getSettablePropertyNames().size());
     }
 
     @Test
@@ -67,7 +73,7 @@ public class DefaultReflectorTest {
         Reflector reflector = new DefaultReflector(Section.class);
         Assert.assertEquals(Long.class, reflector.getGetterType("id"));
         Assert.assertEquals(String.class, reflector.getGetterType("name"));
-        Assert.assertEquals(2, reflector.getGettablePropertyNames().size());
+        Assert.assertEquals(3, reflector.getGettablePropertyNames().size());
     }
 
     @Test
@@ -88,5 +94,10 @@ public class DefaultReflectorTest {
         Assert.assertTrue(reflector.hasGetter("name"));
     }
 
+    @Test
+    public void test1() throws Exception {
+        Reflector reflector = new DefaultReflector(Section.class);
+        Assert.assertEquals(3, reflector.getFields().size());
+    }
 
 }

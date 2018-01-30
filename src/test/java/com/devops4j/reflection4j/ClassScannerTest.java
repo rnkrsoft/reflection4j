@@ -13,7 +13,7 @@ public class ClassScannerTest {
 
     @Test
     public void testScan() throws Exception {
-        ClassScanner scanner = new ClassScanner();
+        ClassScanner scanner = new ClassScanner(false);
         scanner.scan("com.devops4j.reflection4j.scanner");
         Assert.assertEquals(2, scanner.getClasses().size());
     }

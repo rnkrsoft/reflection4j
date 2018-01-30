@@ -20,7 +20,7 @@ public class MetaObjectFactoryTest {
 
     @Test
     public void testForObject() throws Exception {
-        MetaObject metaObject = GlobalSystemMetadata.META_OBJECT_FACTORY.forObject(new DemoBean());
+        MetaObject metaObject = GlobalSystemMetadata.META_OBJECT_FACTORY.forObject("",DemoBean.class, new DemoBean());
         Collection<String> getters = metaObject.getGetterNames();
         Collection<String> setters = metaObject.getSetterNames();
         System.out.println(getters);

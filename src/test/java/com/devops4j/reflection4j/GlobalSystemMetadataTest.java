@@ -14,7 +14,7 @@ public class GlobalSystemMetadataTest {
 
     @Test
     public void testForObject() throws Exception {
-        MetaObject metaObject = GlobalSystemMetadata.forObject(BigDecimal.ONE);
+        MetaObject metaObject = GlobalSystemMetadata.forObject(BigDecimal.class, BigDecimal.ONE);
         System.out.println(metaObject.getGetterNames());
         System.out.println(metaObject.getSetterNames());
     }

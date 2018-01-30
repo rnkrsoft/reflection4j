@@ -20,8 +20,7 @@ public class GetFieldInvoker implements Invoker {
     }
 
     public <T> T invoke(Object target, Map<String, Object> args) throws Exception {
-        ErrorContextFactory.instance().message("该执行器不支持该方式调用!").throwError();
-        return null;
+        throw ErrorContextFactory.instance().message("该执行器不支持该方式调用!").runtimeException();
     }
 
     public Class<?> getReturnClass() {

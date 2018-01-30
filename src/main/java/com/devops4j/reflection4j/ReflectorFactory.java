@@ -7,5 +7,5 @@ public interface ReflectorFactory {
 
     void setClassCacheEnabled(boolean classCacheEnabled);
 
-    Reflector findForClass(Class<?> type);
+    Reflector reflector(Class<?> type);
 }

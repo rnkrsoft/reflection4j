@@ -41,16 +41,13 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
 
     public void register(Class interfaceClass, Class implementClass) {
         if (!interfaceClass.isInterface()) {
-            ErrorContextFactory.instance().message("注册接口映射时,interfaceClass参数'{}'不是接口", interfaceClass).throwError();
-            return;
+            throw ErrorContextFactory.instance().message("注册接口映射时,interfaceClass参数'{}'不是接口", interfaceClass).runtimeException();
         }
         if (implementClass.isInterface()) {
-            ErrorContextFactory.instance().message("注册接口映射时,implementClass参数'{}'是接口", interfaceClass).solution("使用'{}'接口的实现类", interfaceClass).throwError();
-            return;
+            throw ErrorContextFactory.instance().message("注册接口映射时,implementClass参数'{}'是接口", interfaceClass).solution("使用'{}'接口的实现类", interfaceClass).runtimeException();
         }
         if (implementClass.getModifiers() == Modifier.ABSTRACT) {
-            ErrorContextFactory.instance().message("注册接口映射时,implementClass参数'{}'是抽象的", interfaceClass).solution("使用'{}'接口的非抽象实现类", interfaceClass).throwError();
-            return;
+            throw ErrorContextFactory.instance().message("注册接口映射时,implementClass参数'{}'是抽象的", interfaceClass).solution("使用'{}'接口的非抽象实现类", interfaceClass).runtimeException();
         }
         registers.put(interfaceClass, implementClass);
     }
@@ -91,7 +88,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
                     //通过无参构造创建实例
                     return constructor.newInstance();
                 } catch (Exception e) {
-                    ErrorContextFactory.instance().message("类'{}'不能使用无参构造方法创建实例", type).solution("请换成该类的有参构造方法创建实例").cause(e).throwError();
+                    throw ErrorContextFactory.instance().message("类'{}'不能使用无参构造方法创建实例", type).solution("请换成该类的有参构造方法创建实例").cause(e).runtimeException();
                 }
             }
             //如果参数值或者参数类型不为空，则采用带有参数的构造函数
@@ -119,8 +116,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
                 }
                 argValues.deleteCharAt(argValues.length() - 1); // remove trailing ,
             }
-            ErrorContextFactory.instance().message("Error instantiating {} with invalid types {} or values {}", type, argTypes, argValues).cause(e).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("Error instantiating {} with invalid types {} or values {}", type, argTypes, argValues).cause(e).runtimeException();
         }
     }
 
@@ -150,16 +146,13 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
                 || type == Double.TYPE
                 || type == Double.class
                 ) {
-            ErrorContextFactory.instance().message("创建实例时,implementClass参数'{}'是基本类型", classToCreate).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("创建实例时,implementClass参数'{}'是基本类型", classToCreate).runtimeException();
         }
         if (classToCreate.isInterface()) {
-            ErrorContextFactory.instance().message("创建实例时,implementClass参数'{}'是接口", classToCreate).solution("使用'{}'接口的实现类", classToCreate).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("创建实例时,implementClass参数'{}'是接口", classToCreate).solution("使用'{}'接口的实现类", classToCreate).runtimeException();
         }
         if (classToCreate.getModifiers() == Modifier.ABSTRACT) {
-            ErrorContextFactory.instance().message("创建实例时,implementClass参数'{}'是抽象的", classToCreate).solution("使用'{}'接口的非抽象实现类", classToCreate).throwError();
-            return null;
+            throw ErrorContextFactory.instance().message("创建实例时,implementClass参数'{}'是抽象的", classToCreate).solution("使用'{}'接口的非抽象实现类", classToCreate).runtimeException();
         }
         return classToCreate;
     }

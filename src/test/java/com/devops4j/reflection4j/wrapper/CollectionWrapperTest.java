@@ -30,7 +30,7 @@ public class CollectionWrapperTest {
         PropertyTokenizer propertyTokenizer = new PropertyTokenizer("x[1].fieldName");
         List list = new ArrayList();
         list.add(new DemoBean("test1", 12, BigDecimal.TEN));
-        CollectionWrapper collectionWrapper = new CollectionWrapper(null, list);
+        CollectionWrapper collectionWrapper = new CollectionWrapper(List.class, null, list);
         Object val = collectionWrapper.get(propertyTokenizer);
     }
 
@@ -83,7 +83,7 @@ public class CollectionWrapperTest {
     public void testAdd() throws Exception {
         List list = new ArrayList();
         list.add(new DemoBean("test1", 12, BigDecimal.TEN));
-        CollectionWrapper collectionWrapper = new CollectionWrapper(null, list);
+        CollectionWrapper collectionWrapper = new CollectionWrapper(List.class, null, list);
         collectionWrapper.add(new DemoBean("test2", 13, BigDecimal.TEN));
         Object obj = collectionWrapper.getNativeObject();
         System.out.println(obj);
@@ -93,7 +93,7 @@ public class CollectionWrapperTest {
     public void testAddAll() throws Exception {
         List list = new ArrayList();
         list.add(new DemoBean("test1", 12, BigDecimal.TEN));
-        CollectionWrapper collectionWrapper = new CollectionWrapper(null, list);
+        CollectionWrapper collectionWrapper = new CollectionWrapper(List.class, null, list);
         collectionWrapper.addAll(list);
         Object obj = collectionWrapper.getNativeObject();
         System.out.println(obj);
