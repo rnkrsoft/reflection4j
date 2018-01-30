@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.devops4j.reflection4j</groupId>
     <artifactId>reflection4j</artifactId>
-    <version>1.0.0-PRE1</version>
+    <version>1.0.0</version>
     <name>reflection4j</name>
     <description>devops4j of reflection library!</description>
     <url>https://github.com/devops4j</url>
@@ -26,8 +26,8 @@
         <log4j2.version>2.7</log4j2.version>
         <log4j-over-slf4j.version>1.7.5</log4j-over-slf4j.version>
         <disruptor.version>3.3.5</disruptor.version>
-        <logtrace4j.version>1.0.0-PRE1</logtrace4j.version>
-        <groundwork.version>1.0.0-PRE1</groundwork.version>
+        <logtrace4j.version>1.0.0</logtrace4j.version>
+        <groundwork.version>1.0.0</groundwork.version>
     </properties>
     <scm>
         <connection>git@github.com:devops4j/reflection4j.git</connection>
@@ -56,11 +56,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ognl</groupId>
-            <artifactId>ognl</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

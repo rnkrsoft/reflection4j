@@ -407,7 +407,11 @@ public class DefaultReflector implements Reflector {
     }
 
     public Field getField(String propertyName) {
-        return fields.get(propertyName);
+        Field field = fields.get(propertyName);
+        if(field == null){
+            throw ErrorContextFactory.instance().message("There is no field for property named '{}' in '{}'", propertyName, type).runtimeException();
+        }
+        return field;
     }
 
     public List<Field> getFields() {
