@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.devops4j.reflection4j</groupId>
+    <groupId>com.rnkrsoft.reflection4j</groupId>
     <artifactId>reflection4j</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>reflection4j</name>
     <description>devops4j of reflection library!</description>
     <url>https://github.com/devops4j</url>
@@ -26,26 +26,20 @@
         <log4j2.version>2.7</log4j2.version>
         <log4j-over-slf4j.version>1.7.5</log4j-over-slf4j.version>
         <disruptor.version>3.3.5</disruptor.version>
-        <logtrace4j.version>1.0.0</logtrace4j.version>
-        <groundwork.version>1.0.0</groundwork.version>
+        <logtrace4j.version>1.0.1-SNAPSHOT</logtrace4j.version>
+        <groundwork.version>1.0.1-SNAPSHOT</groundwork.version>
     </properties>
-    <scm>
-        <connection>git@github.com:devops4j/reflection4j.git</connection>
-        <developerConnection>https://github.com/devops4j/reflection4j.git</developerConnection>
-        <url>https://github.com/devops4j</url>
-    </scm>
     <dependencies>
         <dependency>
-            <groupId>com.devops4j.groundwork</groupId>
+            <groupId>com.rnkrsoft.groundwork</groupId>
             <artifactId>groundwork</artifactId>
             <version>${groundwork.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.devops4j.logtrace4j</groupId>
+            <groupId>com.rnkrsoft.logtrace4j</groupId>
             <artifactId>logtrace4j</artifactId>
             <version>${logtrace4j.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -169,10 +163,10 @@
         <developer>
             <id>devops4j</id>
             <name>devops4j</name>
-            <email>devops4j@devops4j.com</email>
-            <url>http://www.devops4j.com</url>
+            <email>devops4j@rnkrsoft.com</email>
+            <url>http://www.rnkrsoft.com</url>
             <organization>devops4j</organization>
-            <organizationUrl>http://www.devops4j.com</organizationUrl>
+            <organizationUrl>http://www.rnkrsoft.com</organizationUrl>
             <roles>
                 <role>architect</role>
                 <role>developer</role>
@@ -266,16 +260,28 @@
                     </plugin>
                 </plugins>
             </build>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-                </repository>
-            </distributionManagement>
         </profile>
     </profiles>
+    <scm>
+        <connection>http://admin@git.rnkrsoft.com/r/reflection4j.git </connection>
+        <developerConnection>http://admin@git.rnkrsoft.com/r/reflection4j.git </developerConnection>
+        <url>https://www.rnkrsoft.com</url>
+    </scm>
+    <repositories>
+        <repository>
+            <id>rnkrsoft</id>
+            <name>RnKrSoft Repository</name>
+            <url>http://nexus.rnkrsoft.com/content/groups/public/</url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>rnkrsoft</id>
+            <url>http://nexus.rnkrsoft.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>rnkrsoft</id>
+            <url>http://nexus.rnkrsoft.com/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
 </project>
