@@ -5,16 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.rnkrsoft.reflection4j</groupId>
     <artifactId>reflection4j</artifactId>
-    <version>1.0.1-beta1</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>reflection4j</name>
-    <description>devops4j of reflection library!</description>
+    <description>rnkrsoft of reflection library</description>
     <url>https://github.com/devops4j</url>
-    <licenses>
-        <license>
-            <name>Apache License Version 2.0</name>
-            <url>http://www.apache.org/licenses</url>
-        </license>
-    </licenses>
     <properties>
         <sourceEncoding>UTF-8</sourceEncoding>
         <jdk.version>1.7</jdk.version>
@@ -26,20 +20,21 @@
         <log4j2.version>2.7</log4j2.version>
         <log4j-over-slf4j.version>1.7.5</log4j-over-slf4j.version>
         <disruptor.version>3.3.5</disruptor.version>
-        <logtrace4j.version>1.0.1-beta1</logtrace4j.version>
-        <groundwork.version>1.0.1-beta1</groundwork.version>
+        <logtrace4j.version>1.0.1-SNAPSHOT</logtrace4j.version>
+        <groundwork.version>1.0.1-SNAPSHOT</groundwork.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.rnkrsoft.groundwork</groupId>
             <artifactId>groundwork</artifactId>
             <version>${groundwork.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.rnkrsoft.logtrace4j</groupId>
             <artifactId>logtrace4j</artifactId>
             <version>${logtrace4j.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -161,11 +156,11 @@
     </dependencyManagement>
     <developers>
         <developer>
-            <id>devops4j</id>
-            <name>devops4j</name>
-            <email>devops4j@rnkrsoft.com</email>
+            <id>rnkrsoft</id>
+            <name>rnkrsoft</name>
+            <email>devops4j@qq.com</email>
             <url>http://www.rnkrsoft.com</url>
-            <organization>devops4j</organization>
+            <organization>rnkrsoft</organization>
             <organizationUrl>http://www.rnkrsoft.com</organizationUrl>
             <roles>
                 <role>architect</role>
@@ -215,7 +210,6 @@
                             <argLine>-Dfile.encoding=UTF-8</argLine>
                         </configuration>
                     </plugin>
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-release-plugin</artifactId>
@@ -243,12 +237,12 @@
     </repositories>
     <distributionManagement>
         <snapshotRepository>
-            <id>rnkrsoft</id>
-            <url>http://nexus.rnkrsoft.com/content/repositories/snapshots/</url>
+            <id>open-source-snapshots</id>
+            <url>http://nexus.rnkrsoft.com/content/repositories/open-source-snapshots/</url>
         </snapshotRepository>
         <repository>
-            <id>rnkrsoft</id>
-            <url>http://nexus.rnkrsoft.com/content/repositories/releases/</url>
+            <id>open-source-releases</id>
+            <url>http://nexus.rnkrsoft.com/content/repositories/open-source-releases/</url>
         </repository>
     </distributionManagement>
 </project>
