@@ -32,13 +32,13 @@ package com.rnkrsoft.reflection4j.resource;
 
 
 import com.rnkrsoft.logtrace4j.ErrorContextFactory;
+import com.rnkrsoft.utils.StringUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import static com.rnkrsoft.reflection4j.Utils.*;
 
 /**
  * Created by rnkrsoft on 2017/12/2.
@@ -56,11 +56,11 @@ public class Resource {
     }
 
     public URL url(String src) {
-        if (!src.startsWith(CLASSPATH_ALL_URL_PREFIX)) {
+        if (!src.startsWith(StringUtils.CLASSPATH_ALL_URL_PREFIX)) {
             throw ErrorContextFactory.instance().message("文件'{}'不是有效的classpath*资源访问", src).runtimeException();
         }
-        String temp = deleteClassPathStar(src);
-        String file = convertPackageToPath(temp);
+        String temp =StringUtils.deleteClassPathStar(src);
+        String file = StringUtils.convertPackageToPath(temp);
         URL url = classLoader.getResource(file);
         if (url == null) {
             throw ErrorContextFactory.instance().message("文件'{}'不存在", src).runtimeException();

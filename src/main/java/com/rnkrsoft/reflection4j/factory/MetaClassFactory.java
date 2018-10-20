@@ -30,9 +30,11 @@
  */
 package com.rnkrsoft.reflection4j.factory;
 
-import com.rnkrsoft.reflection4j.meta.DefaultMetaClass;
 import com.rnkrsoft.reflection4j.MetaClass;
+import com.rnkrsoft.reflection4j.ObjectFactory;
+import com.rnkrsoft.reflection4j.ObjectWrapperFactory;
 import com.rnkrsoft.reflection4j.ReflectorFactory;
+import com.rnkrsoft.reflection4j.meta.DefaultMetaClass;
 import lombok.Getter;
 
 /**
@@ -40,13 +42,19 @@ import lombok.Getter;
  */
 public class MetaClassFactory {
     @Getter
+    ObjectFactory objectFactory;
+    @Getter
+    ObjectWrapperFactory objectWrapperFactory;
+    @Getter
     ReflectorFactory reflectorFactory;
 
-    public MetaClassFactory(ReflectorFactory reflectorFactory) {
+    public MetaClassFactory(ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory) {
+        this.objectFactory = objectFactory;
+        this.objectWrapperFactory = objectWrapperFactory;
         this.reflectorFactory = reflectorFactory;
     }
 
     public MetaClass forClass(Class<?> type) {
-        return new DefaultMetaClass(type, reflectorFactory, this);
+        return new DefaultMetaClass(type, objectFactory, objectWrapperFactory, reflectorFactory, this);
     }
 }

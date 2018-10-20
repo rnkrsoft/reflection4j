@@ -60,4 +60,8 @@ public class MetaObjectFactory {
     public MetaObject forObject(String propertyName, Class type, Object object) {
         return new DefaultMetaObject(propertyName, type, object, objectFactory, objectWrapperFactory, reflectorFactory, metaClassFactory, this);
     }
+
+    public MetaObject forObject(Class type, Object object) {
+        return new DefaultMetaObject("", type, object, objectFactory, objectWrapperFactory, reflectorFactory, metaClassFactory, this);
+    }
 }

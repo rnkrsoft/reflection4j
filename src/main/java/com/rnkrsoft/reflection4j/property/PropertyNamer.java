@@ -30,8 +30,8 @@
  */
 package com.rnkrsoft.reflection4j.property;
 
-import com.rnkrsoft.reflection4j.Utils;
 import com.rnkrsoft.logtrace4j.ErrorContextFactory;
+import com.rnkrsoft.utils.StringUtils;
 
 /**
  * 这个类提供了几个用来判断属性特征和从方面名称中获取属性名称的函数，
@@ -59,7 +59,7 @@ public final class PropertyNamer {
         } else {
             throw ErrorContextFactory.instance().message("Error parsing property name '{}'.  Didn't start with 'is', 'get' or 'set'.", name).runtimeException();
         }
-        name = Utils.toFirstLowerCase(name);
+        name = StringUtils.firstCharToLower(name);
         return name;
     }
 

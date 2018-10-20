@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class DefaultMetaClassTest {
     @Test
     public void testBuildProperty() throws Exception {
-        MetaClass metaClass = new DefaultMetaClass(DemoBean.class, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
         String str = metaClass.findProperty("bean1.bean2.col2");
         Assert.assertEquals("bean1.bean2.col2", str);
         String str1 = metaClass.findProperty("bean1.bean2");
@@ -28,7 +28,7 @@ public class DefaultMetaClassTest {
 
     @Test
     public void testMetaClassForProperty() throws Throwable {
-        MetaClass metaClass = new DefaultMetaClass(DemoBean.class, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY,  GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
         MetaClass bean1Meta1 = metaClass.metaClassForProperty("bean1");
         Assert.assertEquals(DemoBean1.class, bean1Meta1.getType());
         Invoker invoker = bean1Meta1.getReflector().getGetter("col1");
@@ -42,7 +42,7 @@ public class DefaultMetaClassTest {
 
     @Test
     public void testHasGetter() throws Exception {
-        MetaClass metaClass = new DefaultMetaClass(DemoBean.class, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY,  GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
         DemoBean demoBean = metaClass.newInstance();
         demoBean.setCol("xxxxxxxxxxxxxxxxxxxxxsds");
         String col = metaClass.getGetter("col").invoke(demoBean);
@@ -51,7 +51,7 @@ public class DefaultMetaClassTest {
 
     @Test
     public void testHasSetter() throws Exception {
-        MetaClass metaClass = new DefaultMetaClass(DemoBean.class, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY,  GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
         Assert.assertEquals(true, metaClass.hasSetter("col"));
         Assert.assertEquals(true, metaClass.hasGetter("col"));
         Assert.assertEquals(false, metaClass.hasSetter("col1"));
@@ -60,14 +60,14 @@ public class DefaultMetaClassTest {
 
     @Test
     public void testGetGetterNames() throws Exception {
-        MetaClass metaClass = new DefaultMetaClass(DemoBean.class, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY,  GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
         Assert.assertEquals(true, metaClass.getGetterNames().contains("col"));
         Assert.assertEquals(false, metaClass.getGetterNames().contains("col1"));
     }
 
     @Test
     public void testGetSetterNames() throws Exception {
-        MetaClass metaClass = new DefaultMetaClass(DemoBean.class, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
         Assert.assertEquals(true, metaClass.getSetterNames().contains("col"));
         Assert.assertEquals(false, metaClass.getSetterNames().contains("col1"));
     }
@@ -92,7 +92,7 @@ public class DefaultMetaClassTest {
 
     @Test
     public void test1() throws Throwable {
-        MetaClass metaClass = new DefaultMetaClass(DemoBean.class, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY,  GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
         Invoker invoker = metaClass.getGetter("col");
         DemoBean demoBean = new DemoBean();
         demoBean.setCol("xxxx");
@@ -103,6 +103,6 @@ public class DefaultMetaClassTest {
 
     @Test
     public void test2() throws Throwable {
-        MetaClass metaClass = new DefaultMetaClass(HashMap.class, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        MetaClass metaClass = new DefaultMetaClass(HashMap.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY,  GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
     }
 }

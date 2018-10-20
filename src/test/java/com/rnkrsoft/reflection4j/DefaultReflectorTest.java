@@ -4,6 +4,8 @@ import com.rnkrsoft.reflection4j.reflector.DefaultReflector;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Locale;
+
 /**
  * Created by rnkrsoft on 2017/7/27.
  */
@@ -47,7 +49,7 @@ public class DefaultReflectorTest {
         public Section() {
         }
 
-        public Section(String name, Long id) {
+        private Section(String name, Long id) {
             super(name, id);
         }
 
@@ -64,6 +66,8 @@ public class DefaultReflectorTest {
         Assert.assertEquals(Long.class, reflector.getSetterType("id"));
         System.out.println(reflector.getSettablePropertyNames());
         Assert.assertEquals(3, reflector.getSettablePropertyNames().size());
+        boolean b= reflector.hasConstructor(String.class, Long.class);
+        Assert.assertEquals(true, b);
     }
 
     @Test
@@ -72,6 +76,8 @@ public class DefaultReflectorTest {
         Assert.assertEquals(Long.class, reflector.getGetterType("id"));
         Assert.assertEquals(String.class, reflector.getGetterType("name"));
         Assert.assertEquals(3, reflector.getGettablePropertyNames().size());
+        boolean b= reflector.hasConstructor(String.class, Long.class);
+        Assert.assertEquals(true, b);
     }
 
     @Test

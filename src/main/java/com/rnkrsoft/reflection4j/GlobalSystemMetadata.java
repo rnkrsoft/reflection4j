@@ -42,7 +42,7 @@ public abstract class GlobalSystemMetadata {
     public static final ObjectWrapperFactory OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
     public static final ReflectorFactory REFLECTOR_FACTORY = new DefaultReflectorFactory();
     public static final TypeAliasRegistry TYPE_ALIAS_REGISTRY = new DefaultTypeAliasRegistry();
-    public static final MetaClassFactory META_CLASS_FACTORY = new MetaClassFactory(REFLECTOR_FACTORY);
+    public static final MetaClassFactory META_CLASS_FACTORY = new MetaClassFactory(OBJECT_FACTORY, OBJECT_WRAPPER_FACTORY, REFLECTOR_FACTORY);
     public static final MetaObjectFactory META_OBJECT_FACTORY = new MetaObjectFactory(OBJECT_FACTORY, OBJECT_WRAPPER_FACTORY, REFLECTOR_FACTORY, META_CLASS_FACTORY);
     public static final MetaClass NULL_META_CLASS = META_CLASS_FACTORY.forClass(NullObject.class);
 
@@ -57,7 +57,7 @@ public abstract class GlobalSystemMetadata {
      */
     public static MetaObject forObject(Class type, Object object) {
         //从名称为""开始构建，
-        return META_OBJECT_FACTORY.forObject("",type, object);
+        return META_OBJECT_FACTORY.forObject(type, object);
     }
 
     /**

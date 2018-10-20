@@ -154,6 +154,14 @@ public interface MetaClass {
     <T> T newInstance();
 
     /**
+     * 创建一个类元信息对应的实例，构建时需要传入参数
+     * @param args
+     * @param <T>
+     * @return
+     */
+    <T> T newInstance(Object... args);
+
+    /**
      * 获取类元信息对应的类对象
      * @return 类对象
      */
@@ -164,4 +172,11 @@ public interface MetaClass {
      * @return 反射器
      */
     Reflector getReflector();
+
+    /**
+     *  获取传入对象的MetaObject对象
+     * @param object 对象
+     * @return MetaObject
+     */
+    MetaObject getMetaObject(Object object);
 }
