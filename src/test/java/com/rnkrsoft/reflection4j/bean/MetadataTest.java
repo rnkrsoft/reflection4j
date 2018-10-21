@@ -13,8 +13,8 @@ public class MetadataTest {
     public void test1() {
         MetaClass metaClass = GlobalSystemMetadata.forClass(RootBean.class);
         MetaClass metaClass1 = metaClass.metaClassForProperty("bean1");
-        MetaClass metaClass2 = metaClass.metaClassForProperty("bean1.bean1bean2");
-        MetaClass metaClass3 = metaClass.metaClassForProperty("bean1.bean1bean2.name");
+        MetaClass metaClass2 = metaClass.metaClassForProperty("bean1.bean2");
+        MetaClass metaClass3 = metaClass.metaClassForProperty("bean1.bean2.name2");
 
         Object bean = metaClass.newInstance();
         System.out.println(bean);
@@ -22,11 +22,12 @@ public class MetadataTest {
         Object bean1 = metaClass1.newInstance();
         System.out.println(bean1);
 
-        MetaObject metaObject = metaClass1.getMetaObject(bean1);
-        Object object = metaObject.getValue("bean1bean2");
-        System.out.println(object);
-        metaObject.setValue("name", "this is a test");
-        System.out.println(metaObject.getValue("name"));
+        MetaObject metaObject = GlobalSystemMetadata.forObject(RootBean.class, new RootBean());
+        MetaObject metaObject2 =  metaObject.metaObjectForProperty("bean1.bean2");
+        System.out.println(metaObject2.getFullName());
+
+        MetaObject metaObject3 =  metaObject.metaObjectForProperty("bean1.bean2.name2");
+        System.out.println(metaObject3.getFullName());
 
     }
 }

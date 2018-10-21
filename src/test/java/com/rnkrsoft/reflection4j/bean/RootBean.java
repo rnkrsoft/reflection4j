@@ -10,5 +10,5 @@ import java.io.Serializable;
 @Data
 public class RootBean implements Serializable{
     Bean1 bean1 = new Bean1();
-    Bean2 bean2 = new Bean2("name1", 1);
+    Bean2 bean2 = new Bean2();
 }

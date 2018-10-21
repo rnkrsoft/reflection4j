@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 @Data
 public class Bean1 implements Serializable{
-    Bean2 bean1bean2 = new Bean2("name3", 3);
-    String name = "name2";
-    int age = 2;
+    Bean2 bean2;
+    String name1;
+    int age1;
 }

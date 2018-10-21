@@ -155,11 +155,11 @@ public interface MetaClass {
 
     /**
      * 创建一个类元信息对应的实例，构建时需要传入参数
-     * @param args
      * @param <T>
+     * @param args
      * @return
      */
-    <T> T newInstance(Object... args);
+    <T> Object newInstance(Object... args);
 
     /**
      * 获取类元信息对应的类对象

@@ -1,6 +1,7 @@
 package com.rnkrsoft.reflection4j.meta;
 
 
+import com.rnkrsoft.logtrace4j.TraceableRuntimeException;
 import com.rnkrsoft.reflection4j.Invoker;
 import com.rnkrsoft.reflection4j.MetaClass;
 import com.rnkrsoft.reflection4j.GlobalSystemMetadata;
@@ -71,11 +72,39 @@ public class DefaultMetaClassTest {
         Assert.assertEquals(true, metaClass.getSetterNames().contains("col"));
         Assert.assertEquals(false, metaClass.getSetterNames().contains("col1"));
     }
+    @Test
+    public void testNewInstance() throws Exception {
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        Object obj = metaClass.newInstance("this is a test", new DemoBean1());
+        System.out.println(obj);
+    }
+
+    @Test(expected = TraceableRuntimeException.class)
+    public void testNewInstanceFail() throws Exception {
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        Object obj = metaClass.newInstance("this is a test");
+        Assert.fail("没有这样的构造函数");
+    }
+
+    @Test(expected = TraceableRuntimeException.class)
+    public void testNewInstanceFail2() throws Exception {
+        MetaClass metaClass = new DefaultMetaClass(DemoBean.class,GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY);
+        Object obj = metaClass.newInstance(new DemoBean1(), "this is a test");
+        Assert.fail("没有这样的构造函数");
+    }
 
     @Data
     static class DemoBean {
         String col;
         DemoBean1 bean1;
+
+        public DemoBean(String col, DemoBean1 bean1) {
+            this.col = col;
+            this.bean1 = bean1;
+        }
+
+        public DemoBean() {
+        }
     }
 
     @Data

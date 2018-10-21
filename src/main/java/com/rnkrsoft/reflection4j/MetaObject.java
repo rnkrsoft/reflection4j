@@ -42,6 +42,12 @@ import java.util.List;
  */
 public interface MetaObject {
     Class getType();
+
+    /**
+     * 获取当前值对象的尖端名称
+     * @return
+     */
+    String getSimpleName();
     /**
      * 获取当前值对象的完整名称，与PropertyTokenizer格式一致
      * @return

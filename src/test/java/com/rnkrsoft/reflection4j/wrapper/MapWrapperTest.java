@@ -5,6 +5,7 @@ import com.rnkrsoft.reflection4j.property.PropertyTokenizer;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class MapWrapperTest {
         Map map = new HashMap();
         map.put("key1", "val1");
         map.put("key2", "val2");
-        MapWrapper mapWrapper = new MapWrapper( Map.class, GlobalSystemMetadata.META_OBJECT_FACTORY.forObject("",Map.class, map),map);
+        MapWrapper mapWrapper = new MapWrapper(new ArrayList(), Map.class, GlobalSystemMetadata.META_OBJECT_FACTORY.forObject("",Map.class, map),map);
         PropertyTokenizer propertyTokenizer = new PropertyTokenizer( "key1");
         Object val1 = mapWrapper.get(propertyTokenizer);
         Assert.assertEquals("val1", val1);

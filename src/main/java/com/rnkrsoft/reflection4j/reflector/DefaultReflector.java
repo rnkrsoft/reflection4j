@@ -429,6 +429,12 @@ public class DefaultReflector implements Reflector {
         }
         String key = getConstructorKey(classes);
         Constructor constructor = constructors.get(key);
+        if (constructor == null){
+            throw ErrorContextFactory.instance()
+                    .message("There is not constructor({})' for '{}'", key, type)
+                    .solution("确保类'{}'有参数为'{}'的构建函数", type, key)
+                    .runtimeException();
+        }
         return constructor;
     }
 
