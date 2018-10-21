@@ -36,6 +36,7 @@ import com.rnkrsoft.reflection4j.factory.MetaClassFactory;
 import com.rnkrsoft.reflection4j.invoker.GetFieldInvoker;
 import com.rnkrsoft.reflection4j.invoker.MethodInvoker;
 import com.rnkrsoft.reflection4j.property.PropertyTokenizer;
+import com.rnkrsoft.utils.StringUtils;
 
 import java.lang.reflect.*;
 import java.util.Collection;
@@ -237,7 +238,7 @@ public class DefaultMetaClass implements MetaClass {
         ErrorContextFactory.instance().activity("检测属性");
         PropertyTokenizer prop = new PropertyTokenizer(propertyName);
         if (prop.hasNext()) {
-            String propertyName0 = Utils.toCamelCase(prop.getName());
+            String propertyName0 = StringUtils.underlineToCamel(prop.getName());
             if (propertyName != null) {
                 builder.append(propertyName0);
                 builder.append(".");
@@ -246,7 +247,7 @@ public class DefaultMetaClass implements MetaClass {
                 metaProp.buildProperty(prop.getChildren(), builder);
             }
         } else {//如果属性到最后一个对象，直接驼峰命名
-            String propertyName0 = Utils.toCamelCase(propertyName);
+            String propertyName0 = StringUtils.underlineToCamel(propertyName);
             if (propertyName != null) {
                 if (reflector.hasProperty(propertyName0)) {
                     builder.append(propertyName0);
