@@ -37,7 +37,6 @@ import com.rnkrsoft.reflection4j.property.PropertyTokenizer;
 import com.rnkrsoft.reflection4j.wrapper.BeanWrapper;
 import com.rnkrsoft.reflection4j.wrapper.CollectionWrapper;
 import com.rnkrsoft.reflection4j.wrapper.MapWrapper;
-import com.rnkrsoft.utils.StringUtils;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -49,7 +48,8 @@ import java.util.Map;
  * Created by rnkrsoft on 2017/6/19.
  */
 public class DefaultMetaObject implements MetaObject {
-    PropertyTokenizer tokenizer;
+    @Getter
+    String fullName;
     @Getter
     Object object;
     @Getter
@@ -67,25 +67,8 @@ public class DefaultMetaObject implements MetaObject {
     @Getter
     MetaObjectFactory metaObjectFactory;
 
-    public DefaultMetaObject(String propertyName,
-                             Class type,
-                             Object object,
-                             ObjectFactory objectFactory,
-                             ObjectWrapperFactory objectWrapperFactory,
-                             ReflectorFactory reflectorFactory,
-                             MetaClassFactory metaClassFactory,
-                             MetaObjectFactory metaObjectFactory) {
-        this(new PropertyTokenizer(propertyName), type, object, objectFactory, objectWrapperFactory, reflectorFactory, metaClassFactory, metaObjectFactory);
-    }
-    public DefaultMetaObject(PropertyTokenizer tokenizer,
-                             Class type,
-                             Object object,
-                             ObjectFactory objectFactory,
-                             ObjectWrapperFactory objectWrapperFactory,
-                             ReflectorFactory reflectorFactory,
-                             MetaClassFactory metaClassFactory,
-                             MetaObjectFactory metaObjectFactory) {
-        this.tokenizer = tokenizer;
+    public DefaultMetaObject(String fullName, Class type, Object object, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory, MetaClassFactory metaClassFactory, MetaObjectFactory metaObjectFactory) {
+        this.fullName = fullName;
         this.object = object;
         this.type = type;
         this.objectFactory = objectFactory;
@@ -99,22 +82,12 @@ public class DefaultMetaObject implements MetaObject {
         } else if (objectWrapperFactory.hasWrapperFor(object)) {
             this.objectWrapper = objectWrapperFactory.getWrapperFor(this, object);
         } else if (Map.class.isAssignableFrom(type)) {
-            this.objectWrapper = new MapWrapper(parents, type, this, (Map) object);
+            this.objectWrapper = new MapWrapper(type, this, (Map) object);
         } else if (Collection.class.isAssignableFrom(type)) {
-            this.objectWrapper = new CollectionWrapper(parents, type, this, (Collection) object);
+            this.objectWrapper = new CollectionWrapper(type, this, (Collection) object);
         } else {
-            this.objectWrapper = new BeanWrapper(parents, type, this, object, metaClassFactory, metaObjectFactory);
+            this.objectWrapper = new BeanWrapper(type, this, object, metaClassFactory, metaObjectFactory);
         }
-    }
-
-    @Override
-    public String getSimpleName() {
-        return this.propertyName;
-    }
-
-    @Override
-    public String getFullName() {
-        return convertPathName(parents) + "." + propertyName;
     }
 
     public boolean hasGetter(String propertyName) {
@@ -126,7 +99,7 @@ public class DefaultMetaObject implements MetaObject {
     }
 
     public void setValue(String propertyName, Object value) {
-        PropertyTokenizer prop = new PropertyTokenizer(parents, propertyName);
+        PropertyTokenizer prop = new PropertyTokenizer(propertyName);
         if (prop.hasNext()) {
             String indexedName = prop.getIndexedName();
             MetaObject metaValue = metaObjectForProperty(indexedName);
@@ -145,7 +118,7 @@ public class DefaultMetaObject implements MetaObject {
     }
 
     public <T> T getValue(String propertyName) {
-        PropertyTokenizer prop = new PropertyTokenizer(parents, propertyName);
+        PropertyTokenizer prop = new PropertyTokenizer(propertyName);
         if (prop.hasNext()) {
             String indexedName = prop.getIndexedName();
             MetaObject metaValue = metaObjectForProperty(indexedName);
@@ -211,7 +184,7 @@ public class DefaultMetaObject implements MetaObject {
     }
 
     MetaObject metaObjectForProperty(List<String> parents, String propertyName) {
-        PropertyTokenizer prop = new PropertyTokenizer(parents, propertyName);
+        PropertyTokenizer prop = new PropertyTokenizer(propertyName);
         if (prop.hasNext()) {
             String indexedName = prop.getIndexedName();
             DefaultMetaObject metaObject = (DefaultMetaObject) metaObjectForProperty(parents, indexedName);
@@ -248,7 +221,7 @@ public class DefaultMetaObject implements MetaObject {
     }
 
     MetaObject instantiatePropertyValue(List<String> parents, String propertyName) {
-        PropertyTokenizer prop = new PropertyTokenizer(parents, propertyName);
+        PropertyTokenizer prop = new PropertyTokenizer(propertyName);
         if (prop.hasNext()) {
             String indexedName = prop.getIndexedName();
             DefaultMetaObject metaObject = (DefaultMetaObject) metaObjectForProperty(parents, indexedName);

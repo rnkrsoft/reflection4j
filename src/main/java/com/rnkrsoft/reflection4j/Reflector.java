@@ -53,8 +53,6 @@ public interface Reflector {
      */
     Constructor getDefaultConstructor();
 
-    Constructor getConstructor(Class...classes);
-
     /**
      * 是否存在无参构造函数
      *
@@ -62,8 +60,6 @@ public interface Reflector {
      */
     boolean hasDefaultConstructor();
 
-
-    boolean hasConstructor(Class...classes);
     /**
      * 获取方法执行器
      * @param name 方法名

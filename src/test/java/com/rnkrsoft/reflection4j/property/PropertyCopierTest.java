@@ -1,7 +1,6 @@
 package com.rnkrsoft.reflection4j.property;
 
 import lombok.*;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -26,8 +25,6 @@ public class PropertyCopierTest {
         DemoBean target = new DemoBean();
         PropertyCopier.copyBeanProperties(DemoBean.class, DemoBean.builder().name("test1").age(12).amt(BigDecimal.TEN).build(), target);
         System.out.println(target);
-        Assert.assertEquals("test1", target.getName());
-        Assert.assertEquals(12, target.getAge());
     }
 
 

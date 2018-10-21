@@ -7,7 +7,6 @@ import lombok.*;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -30,7 +29,7 @@ public class BeanWrapperTest {
         DemoBean demoBean = new DemoBean();
         demoBean.setName("wwwww");
 
-        ObjectWrapper objectWrapper = new BeanWrapper(new ArrayList(), DemoBean.class, GlobalSystemMetadata.META_OBJECT_FACTORY.forObject("", DemoBean.class, demoBean), demoBean, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
+        ObjectWrapper objectWrapper = new BeanWrapper(DemoBean.class, GlobalSystemMetadata.META_OBJECT_FACTORY.forObject("", DemoBean.class, demoBean), demoBean, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
         System.out.println(Arrays.asList(objectWrapper.getGetterNames()));
         System.out.println(Arrays.asList(objectWrapper.getSetterNames()));
         PropertyTokenizer prop = new PropertyTokenizer("name");

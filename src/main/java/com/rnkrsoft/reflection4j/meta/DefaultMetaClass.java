@@ -31,14 +31,11 @@
 package com.rnkrsoft.reflection4j.meta;
 
 import com.rnkrsoft.logtrace4j.ErrorContextFactory;
-import com.rnkrsoft.message.MessageFormatter;
 import com.rnkrsoft.reflection4j.*;
 import com.rnkrsoft.reflection4j.factory.MetaClassFactory;
-import com.rnkrsoft.reflection4j.factory.MetaObjectFactory;
 import com.rnkrsoft.reflection4j.invoker.GetFieldInvoker;
 import com.rnkrsoft.reflection4j.invoker.MethodInvoker;
 import com.rnkrsoft.reflection4j.property.PropertyTokenizer;
-import com.rnkrsoft.utils.StringUtils;
 
 import java.lang.reflect.*;
 import java.util.Collection;
@@ -48,31 +45,25 @@ import java.util.Collection;
  * 默认实现的类元信息
  */
 public class DefaultMetaClass implements MetaClass {
-    Reflector reflector;
-    ObjectFactory objectFactory;
-    ObjectWrapperFactory objectWrapperFactory;
     ReflectorFactory reflectorFactory;
+    Reflector reflector;
     MetaClassFactory metaClassFactory;
 
-    public DefaultMetaClass(Class<?> type, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory, MetaClassFactory metaClassFactory) {
-        this.objectFactory = objectFactory;
-        this.objectWrapperFactory = objectWrapperFactory;
+    public DefaultMetaClass(Class<?> type, ReflectorFactory reflectorFactory, MetaClassFactory metaClassFactory) {
         this.reflectorFactory = reflectorFactory;
         this.reflector = reflectorFactory.reflector(type);
         this.metaClassFactory = metaClassFactory;
     }
-
-    MetaClass metaClassForProperty(PropertyTokenizer prop) {
+    MetaClass metaClassForProperty(PropertyTokenizer prop){
         if (prop.hasNext()) {
             Class clazz = reflector.getGetterType(prop.getName());
             return metaClassFactory.forClass(clazz).metaClassForProperty(prop.getChildren());
-        } else {
+        }else{
             String propertyName = prop.getName();
             Class<?> propType = reflector.getGetterType(propertyName);
             return metaClassFactory.forClass(propType);
         }
     }
-
     public MetaClass metaClassForProperty(String propertyName) {
         PropertyTokenizer prop = new PropertyTokenizer(propertyName);
         return metaClassForProperty(prop);
@@ -182,64 +173,11 @@ public class DefaultMetaClass implements MetaClass {
         try {
             return (T) reflector.getDefaultConstructor().newInstance();
         } catch (InstantiationException e) {
-            throw ErrorContextFactory.instance()
-                    .message("构建实例发生错误,因为该类为不能实例化的类")
-                    .solution("修改类'{}'为可实现的类,不能为接口,抽象类", reflector.getType())
-                    .cause(e)
-                    .runtimeException();
+            throw ErrorContextFactory.instance().message("构建实例发生错误,因为该类为不能实例化的类").solution("修改类'{}'为可实现的类,不能为接口,抽象类", reflector.getType()).cause(e).runtimeException();
         } catch (IllegalAccessException e) {
-            throw ErrorContextFactory.instance()
-                    .message("构建实例发生错误,因为该类的构造方法不能访问")
-                    .solution("修改类'{}'有public的无参构造函数", reflector.getType())
-                    .cause(e)
-                    .runtimeException();
+            throw ErrorContextFactory.instance().message("构建实例发生错误,因为该类的构造方法不能访问").solution("修改类'{}'有public的无参构造函数", reflector.getType()).cause(e).runtimeException();
         } catch (InvocationTargetException e) {
-            throw ErrorContextFactory.instance()
-                    .message("构建实例发生错误,因为该类的无参构造中抛出了异常")
-                    .solution("检查类'{}'的public无参构造函数中构造条件", reflector.getType())
-                    .cause(e.getTargetException())
-                    .runtimeException();
-        } finally {
-            ErrorContextFactory.instance().activity(null);
-        }
-    }
-
-    @Override
-    public <T> T newInstance(Object... args) {
-        Class[] parameterTypes = new Class[args.length];
-        for (int i = 0; i < args.length; i++) {
-            Object arg = args[i];
-            if (arg == null) {
-                throw ErrorContextFactory.instance()
-                        .message("class '{}' Constructor arg '{}' value is null", reflector.getType(), (i + 1))
-                        .solution("please use No Argument Constructor")
-                        .runtimeException();
-            }
-            parameterTypes[i] = arg.getClass();
-        }
-        Constructor constructor = reflector.getConstructor(parameterTypes);
-
-        ErrorContextFactory.instance().activity("创建实例");
-        try {
-            return (T) constructor.newInstance(args);
-        } catch (InstantiationException e) {
-            throw ErrorContextFactory.instance()
-                    .message("构建实例发生错误,因为该类为不能实例化的类")
-                    .solution("修改类'{}'为可实现的类,不能为接口,抽象类", reflector.getType())
-                    .cause(e)
-                    .runtimeException();
-        } catch (IllegalAccessException e) {
-            throw ErrorContextFactory.instance()
-                    .message("构建实例发生错误,因为该类的构造方法不能访问")
-                    .solution("修改类'{}'有public的无参构造函数", reflector.getType())
-                    .cause(e)
-                    .runtimeException();
-        } catch (InvocationTargetException e) {
-            throw ErrorContextFactory.instance()
-                    .message("构建实例发生错误,因为该类的无参构造中抛出了异常")
-                    .solution("检查类'{}'的public无参构造函数中构造条件", reflector.getType())
-                    .cause(e.getTargetException())
-                    .runtimeException();
+            throw ErrorContextFactory.instance().message("构建实例发生错误,因为该类的无参构造中抛出了异常").solution("检查类'{}'的public无参构造函数中构造条件", reflector.getType()).cause(e.getTargetException()).runtimeException();
         } finally {
             ErrorContextFactory.instance().activity(null);
         }
@@ -253,17 +191,7 @@ public class DefaultMetaClass implements MetaClass {
         return reflector;
     }
 
-    @Override
-    public MetaObject getMetaObject(Object object) {
-        if (object == null) {
-            throw new NullPointerException("object is null");
-        }
-        if (reflector.getType() != object.getClass()) {
-            throw new ClassCastException(MessageFormatter.format("object is '{}' Class, but MetaClass is '{}'", object.getClass(), reflector.getType()));
-        }
-        MetaObjectFactory metaObjectFactory = new MetaObjectFactory(objectFactory, objectWrapperFactory, metaClassFactory.getReflectorFactory(), metaClassFactory);
-        return metaObjectFactory.forObject(reflector.getType(), object);
-    }
+
 
 
     private Class<?> getGetterType(PropertyTokenizer prop) {
@@ -309,7 +237,7 @@ public class DefaultMetaClass implements MetaClass {
         ErrorContextFactory.instance().activity("检测属性");
         PropertyTokenizer prop = new PropertyTokenizer(propertyName);
         if (prop.hasNext()) {
-            String propertyName0 = StringUtils.underlineToCamel(prop.getName());
+            String propertyName0 = Utils.toCamelCase(prop.getName());
             if (propertyName != null) {
                 builder.append(propertyName0);
                 builder.append(".");
@@ -318,7 +246,7 @@ public class DefaultMetaClass implements MetaClass {
                 metaProp.buildProperty(prop.getChildren(), builder);
             }
         } else {//如果属性到最后一个对象，直接驼峰命名
-            String propertyName0 = StringUtils.underlineToCamel(propertyName);
+            String propertyName0 = Utils.toCamelCase(propertyName);
             if (propertyName != null) {
                 if (reflector.hasProperty(propertyName0)) {
                     builder.append(propertyName0);

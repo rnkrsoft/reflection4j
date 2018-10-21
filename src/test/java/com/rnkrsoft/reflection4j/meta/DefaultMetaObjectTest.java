@@ -3,12 +3,10 @@ package com.rnkrsoft.reflection4j.meta;
 import com.rnkrsoft.reflection4j.MetaClass;
 import com.rnkrsoft.reflection4j.MetaObject;
 import com.rnkrsoft.reflection4j.GlobalSystemMetadata;
-import com.rnkrsoft.reflection4j.bean.RootBean;
 import lombok.Data;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +21,7 @@ public class DefaultMetaObjectTest {
         demoBean1.setCol1("11111");
         demoBean1.bean1 = new DemoBean2();
         demoBean1.bean1.bean2 = new DemoBean3();
-        MetaObject metaObject = new DefaultMetaObject("", "", DemoBean1.class, demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
+        MetaObject metaObject = new DefaultMetaObject("", DemoBean1.class, demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
         Assert.assertEquals(DemoBean1.class, metaObject.getType());
         MetaObject metaObject1 = metaObject.metaObjectForProperty("col1");
         Assert.assertEquals("col1", metaObject1.getFullName());
@@ -32,7 +30,7 @@ public class DefaultMetaObjectTest {
         Assert.assertEquals("bean1.bean2", metaObject2.getFullName());
         Assert.assertEquals(DemoBean3.class, metaObject2.getType());
         demoBean1.bean1.col2 = "ssss";
-        MetaObject metaObject_ = new DefaultMetaObject("", "", DemoBean2.class, demoBean1.bean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
+        MetaObject metaObject_ = new DefaultMetaObject("", DemoBean2.class, demoBean1.bean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
         MetaObject metaObject_1 = metaObject_.metaObjectForProperty("col2");
         Assert.assertEquals("col2", metaObject_1.getFullName());
         Assert.assertEquals(String.class, metaObject_1.getType());
@@ -44,7 +42,7 @@ public class DefaultMetaObjectTest {
         demoBean1.setCol1("11111");
         demoBean1.bean1 = new DemoBean2();
         Assert.assertNull(demoBean1.bean1.bean2);
-        MetaObject metaObject = new DefaultMetaObject("", "",DemoBean1.class,  demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
+        MetaObject metaObject = new DefaultMetaObject("",DemoBean1.class,  demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
         MetaObject metaObject1 = metaObject.instantiatePropertyValue("bean1.bean2");
         MetaObject metaObject2 = metaObject.instantiatePropertyValue("bean1.bean2.col3");
         System.out.println(metaObject1.getMetaClass());
@@ -58,7 +56,7 @@ public class DefaultMetaObjectTest {
         DemoBean1 demoBean1 = new DemoBean1();
         demoBean1.setCol1("11111");
 
-        MetaObject metaObject = new DefaultMetaObject("", "", DemoBean1.class, demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
+        MetaObject metaObject = new DefaultMetaObject("", DemoBean1.class, demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
         MetaClass metaClass1 = metaObject.metaClassForProperty("bean1");
         Assert.assertEquals(DemoBean2.class, metaClass1.getType());
         System.out.println(metaClass1.getGetterNames());
@@ -97,7 +95,7 @@ public class DefaultMetaObjectTest {
         demoBean1.bean1 = new DemoBean2();
         demoBean1.bean1.bean2 = new DemoBean3();
 
-        MetaObject metaObject = new DefaultMetaObject(new ArrayList(),DemoBean1.class, demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
+        MetaObject metaObject = new DefaultMetaObject("", DemoBean1.class, demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
         Assert.assertEquals(3, metaObject.getSetterNames().size());
         Assert.assertEquals(true, metaObject.getSetterNames().contains("col1"));
         Assert.assertEquals(true, metaObject.getGetterNames().contains("col1"));
@@ -116,15 +114,7 @@ public class DefaultMetaObjectTest {
 
     @Test
     public void testFindProperty() throws Exception {
-        MetaObject metaObject = GlobalSystemMetadata.forObject(RootBean.class, new RootBean());
-        for (String getterName : metaObject.getGetterNames()) {
-            MetaObject mo1 = metaObject.metaObjectForProperty(getterName);
-            System.out.println(mo1.getFullName());
-            for (String getterName1 : mo1.getGetterNames()) {
-                MetaObject mo2 = metaObject.metaObjectForProperty(mo1.getFullName() + "." + getterName1);
-                System.out.println(mo2.getFullName());
-            }
-        }
+
     }
 
     @Test
@@ -135,7 +125,7 @@ public class DefaultMetaObjectTest {
         demoBean1.bean1 = new DemoBean2();
 
 
-        MetaObject metaObject = new DefaultMetaObject("", "", DemoBean1.class, demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
+        MetaObject metaObject = new DefaultMetaObject("", DemoBean1.class, demoBean1, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
         try {
             String str = metaObject.findProperty("bean1.bean2.col1");
             System.out.println(str);
@@ -158,7 +148,7 @@ public class DefaultMetaObjectTest {
     @Test
     public void testGetObject() throws Exception {
         Map map = new HashMap();
-        MetaObject metaObject = new DefaultMetaObject("", "", Map.class, map, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
+        MetaObject metaObject = new DefaultMetaObject("", Map.class, map, GlobalSystemMetadata.OBJECT_FACTORY, GlobalSystemMetadata.OBJECT_WRAPPER_FACTORY, GlobalSystemMetadata.REFLECTOR_FACTORY, GlobalSystemMetadata.META_CLASS_FACTORY, GlobalSystemMetadata.META_OBJECT_FACTORY);
         metaObject.instantiatePropertyValue("xxx");
         System.out.println(map);
     }

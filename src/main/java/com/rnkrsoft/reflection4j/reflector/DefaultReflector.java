@@ -31,7 +31,6 @@
 package com.rnkrsoft.reflection4j.reflector;
 
 import com.rnkrsoft.logtrace4j.ErrorContextFactory;
-import com.rnkrsoft.message.MessageFormatter;
 import com.rnkrsoft.reflection4j.Invoker;
 import com.rnkrsoft.reflection4j.Reflector;
 import com.rnkrsoft.reflection4j.invoker.GetFieldInvoker;
@@ -46,47 +45,20 @@ import java.util.*;
  * 默认实现的反射器接口
  */
 public class DefaultReflector implements Reflector {
-    /**
-     * 忽略的字段
-     */
     static final Set<String> IGNORE_FIELD = new HashSet();
-    /**
-     * 空字符串素组
-     */
+
     static final String[] EMPTY_STRING_ARRAY = new String[0];
-    /**
-     * 类对象
-     */
+
     Class<?> type;
     String[] readablePropertyNames = EMPTY_STRING_ARRAY;
     String[] writablePropertyNames = EMPTY_STRING_ARRAY;
     Map<String, Invoker> setMethods = new HashMap();
-
     Map<String, Invoker> getMethods = new HashMap();
-    /**
-     * 类对象的setter类型
-     */
     Map<String, Class<?>> setTypes = new HashMap();
-    /**
-     * 类对象的getter类型
-     */
     Map<String, Class<?>> getTypes = new HashMap();
-    /**
-     * 字段名键值对，键为字段的简单名字，值为Java字段对象
-     */
     Map<String, Field> fields = new HashMap();
-    /**
-     * 有序的字段列表，保证与JavaBean定义
-     */
     List<Field> orderFields = new ArrayList();
-    /**
-     * 无参构造对象
-     */
     Constructor<?> defaultConstructor;
-    /**
-     * 有参构造对象
-     */
-    final Map<String, Constructor> constructors = new HashMap();
 
     static {
         IGNORE_FIELD.add("serialPersistentFields");
@@ -109,7 +81,7 @@ public class DefaultReflector implements Reflector {
 
     public DefaultReflector(Class<?> clazz) {
         type = clazz;
-        addConstructor(clazz);
+        addDefaultConstructor(clazz);
         addGetMethods(clazz);
         addSetMethods(clazz);
         addFields(clazz);
@@ -117,9 +89,10 @@ public class DefaultReflector implements Reflector {
         writablePropertyNames = setMethods.keySet().toArray(new String[setMethods.keySet().size()]);
     }
 
-    void addConstructor(Class<?> clazz) {
-        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-        for (Constructor<?> constructor : constructors) {
+    void addDefaultConstructor(Class<?> clazz) {
+        Constructor<?>[] consts = clazz.getDeclaredConstructors();
+        boolean found = false;
+        for (Constructor<?> constructor : consts) {
             if (constructor.getParameterTypes().length == 0) {
                 if (canAccessPrivateMethods()) {
                     try {
@@ -128,36 +101,13 @@ public class DefaultReflector implements Reflector {
                         // Ignored. This is only a final precaution, nothing we can do.
                     }
                 }
+
                 if (constructor.isAccessible()) {
                     this.defaultConstructor = constructor;
                 }
-            } else {
-                if (canAccessPrivateMethods()) {
-                    try {
-                        constructor.setAccessible(true);
-                    } catch (Exception e) {
-                        // Ignored. This is only a final precaution, nothing we can do.
-                    }
-                }
-                String constructorKey = getConstructorKey(constructor.getParameterTypes());
-                if (constructor.isAccessible()) {
-                    this.constructors.put(constructorKey, constructor);
-                } else {
-                    System.err.println(MessageFormatter.format("class '{}' '{}({})' is private!", type, type.getSimpleName(), constructorKey));
-                }
+                found = true;
             }
         }
-    }
-
-    String getConstructorKey(Class[] parameterTypes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < parameterTypes.length; i++) {
-            if (i > 0) {
-                sb.append(',');
-            }
-            sb.append(parameterTypes[i].getName());
-        }
-        return sb.toString();
     }
 
     void addGetMethods(Class<?> cls) {
@@ -389,9 +339,16 @@ public class DefaultReflector implements Reflector {
         if (returnType != null) {
             sb.append(returnType.getName()).append('#');
         }
-        sb.append(":");
         sb.append(method.getName());
-        sb.append(getConstructorKey(method.getParameterTypes()));
+        Class<?>[] parameters = method.getParameterTypes();
+        for (int i = 0; i < parameters.length; i++) {
+            if (i == 0) {
+                sb.append(':');
+            } else {
+                sb.append(',');
+            }
+            sb.append(parameters[i].getName());
+        }
         return sb.toString();
     }
 
@@ -412,43 +369,15 @@ public class DefaultReflector implements Reflector {
     }
 
     public Constructor<?> getDefaultConstructor() {
-        return getConstructor();
-    }
-
-    @Override
-    public Constructor getConstructor(Class... classes) {
-        if (classes.length == 0) {
-            if (defaultConstructor != null) {
-                return defaultConstructor;
-            } else {
-                throw ErrorContextFactory.instance()
-                        .message("There is no default constructor for '{}'", type)
-                        .solution("确保类'{}'有无参构建函数", type)
-                        .runtimeException();
-            }
+        if (defaultConstructor != null) {
+            return defaultConstructor;
+        } else {
+            throw ErrorContextFactory.instance().message("There is no default constructor for {}", type).runtimeException();
         }
-        String key = getConstructorKey(classes);
-        Constructor constructor = constructors.get(key);
-        if (constructor == null){
-            throw ErrorContextFactory.instance()
-                    .message("There is not constructor({})' for '{}'", key, type)
-                    .solution("确保类'{}'有参数为'{}'的构建函数", type, key)
-                    .runtimeException();
-        }
-        return constructor;
     }
 
     public boolean hasDefaultConstructor() {
-        return hasConstructor();
-    }
-
-    @Override
-    public boolean hasConstructor(Class... classes) {
-        if (classes.length == 0) {
-            return defaultConstructor != null;
-        }
-        String key = getConstructorKey(classes);
-        return this.constructors.containsKey(key);
+        return defaultConstructor != null;
     }
 
     public Invoker getMethodInvoker(String name, Class... classes) {
@@ -509,10 +438,8 @@ public class DefaultReflector implements Reflector {
 
     public Field getField(String propertyName) {
         Field field = fields.get(propertyName);
-        if (field == null) {
-            throw ErrorContextFactory.instance()
-                    .message("There is no field for property named '{}' in '{}'", propertyName, type)
-                    .runtimeException();
+        if(field == null){
+            throw ErrorContextFactory.instance().message("There is no field for property named '{}' in '{}'", propertyName, type).runtimeException();
         }
         return field;
     }
