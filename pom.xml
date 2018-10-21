@@ -183,7 +183,7 @@
                             <target>${jdk.version}</target>
                             <encoding>${sourceEncoding}</encoding>
                             <compilerArguments>
-                                <verbose/>
+                                <!--<verbose/>-->
                             </compilerArguments>
                         </configuration>
                     </plugin>
