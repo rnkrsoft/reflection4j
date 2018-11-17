@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.rnkrsoft.reflection4j</groupId>
     <artifactId>reflection4j</artifactId>
-    <version>1.0.1-beta2</version>
+    <version>1.0.1</version>
     <name>reflection4j</name>
     <description>rnkrsoft of reflection library</description>
     <url>https://github.com/devops4j</url>
@@ -20,8 +20,8 @@
         <log4j2.version>2.7</log4j2.version>
         <log4j-over-slf4j.version>1.7.5</log4j-over-slf4j.version>
         <disruptor.version>3.3.5</disruptor.version>
-        <logtrace4j.version>1.0.1-beta2</logtrace4j.version>
-        <groundwork.version>1.0.1-beta2</groundwork.version>
+        <logtrace4j.version>1.0.1</logtrace4j.version>
+        <groundwork.version>1.0.1</groundwork.version>
     </properties>
     <dependencies>
         <dependency>
@@ -49,34 +49,34 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <!--Apache Commons Logging instead of slf4j logger -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <!--java util logger insteas of slf4j logger -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <!--slf4j logger api-->
         <dependency>
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <dependencyManagement>
