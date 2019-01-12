@@ -6,8 +6,8 @@
     <groupId>com.rnkrsoft.reflection4j</groupId>
     <artifactId>reflection4j</artifactId>
     <version>1.0.1</version>
-    <name>reflection4j</name>
-    <description>rnkrsoft of reflection library</description>
+    <name>reflection library for java</name>
+    <description>reflection library for java</description>
     <url>https://github.com/rnkrsoft/reflection4j.git</url>
     <licenses>
         <license>
