@@ -8,11 +8,24 @@
     <version>1.0.1</version>
     <name>reflection4j</name>
     <description>rnkrsoft of reflection library</description>
-    <url>https://github.com/devops4j</url>
+    <url>https://github.com/rnkrsoft/reflection4j.git</url>
+    <licenses>
+        <license>
+            <name>RNKRSOFT OPEN SOURCE SOFTWARE LICENSE TERMS 1.0</name>
+            <url>http://www.rnkrsoft.com/open-source-licenses</url>
+        </license>
+    </licenses>
+    <scm>
+        <connection>https://github.com/rnkrsoft/reflection4j.git</connection>
+        <developerConnection>https://github.com/rnkrsoft/reflection4j.git</developerConnection>
+        <url>https://www.rnkrsoft.com</url>
+    </scm>
     <properties>
-        <sourceEncoding>UTF-8</sourceEncoding>
-        <jdk.version>1.7</jdk.version>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <java.version>1.6</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <junit.version>4.12</junit.version>
         <lombok.version>1.16.10</lombok.version>
         <slf4j.version>1.7.21</slf4j.version>
@@ -156,11 +169,11 @@
     </dependencyManagement>
     <developers>
         <developer>
-            <id>rnkrsoft</id>
-            <name>rnkrsoft</name>
-            <email>devops4j@qq.com</email>
+            <id>rnkrsoft.com</id>
+            <name>rnkrsoft.com</name>
+            <email>devops@rnkrsoft.com</email>
             <url>http://www.rnkrsoft.com</url>
-            <organization>rnkrsoft</organization>
+            <organization>rnkrsoft.com</organization>
             <organizationUrl>http://www.rnkrsoft.com</organizationUrl>
             <roles>
                 <role>architect</role>
@@ -169,46 +182,63 @@
             <timezone>+8</timezone>
         </developer>
     </developers>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                </configuration>
+            </plugin>
+            <!-- Source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <forkMode>always</forkMode>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <profiles>
         <profile>
             <id>release</id>
             <build>
                 <plugins>
+                    <!-- Javadoc -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.0</version>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
                         <configuration>
-                            <source>${jdk.version}</source>
-                            <target>${jdk.version}</target>
-                            <encoding>${sourceEncoding}</encoding>
-                            <compilerArguments>
-                                <!--<verbose/>-->
-                            </compilerArguments>
+                            <charset>UTF-8</charset>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
                         </configuration>
-                    </plugin>
-                    <!-- Source -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>jar-no-fork</goal>
+                                    <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.16</version>
-                        <configuration>
-                            <forkMode>always</forkMode>
-                            <argLine>-Dfile.encoding=UTF-8</argLine>
-                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -219,30 +249,32 @@
                             <goals>deploy</goals>
                         </configuration>
                     </plugin>
+                    <!-- GPG -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+                </repository>
+            </distributionManagement>
         </profile>
     </profiles>
-    <scm>
-        <connection>http://admin@git.rnkrsoft.com/r/reflection4j.git </connection>
-        <developerConnection>http://admin@git.rnkrsoft.com/r/reflection4j.git </developerConnection>
-        <url>https://www.rnkrsoft.com</url>
-    </scm>
-    <repositories>
-        <repository>
-            <id>rnkrsoft</id>
-            <name>RnKrSoft Repository</name>
-            <url>http://nexus.rnkrsoft.com/content/groups/public/</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>open-source-snapshots</id>
-            <url>http://nexus.rnkrsoft.com/content/repositories/open-source-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>open-source-releases</id>
-            <url>http://nexus.rnkrsoft.com/content/repositories/open-source-releases/</url>
-        </repository>
-    </distributionManagement>
 </project>
