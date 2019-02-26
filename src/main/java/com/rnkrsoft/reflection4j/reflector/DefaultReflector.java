@@ -47,16 +47,14 @@ import java.util.*;
 public class DefaultReflector implements Reflector {
     static final Set<String> IGNORE_FIELD = new HashSet();
 
-    static final String[] EMPTY_STRING_ARRAY = new String[0];
-
     Class<?> type;
-    String[] readablePropertyNames = EMPTY_STRING_ARRAY;
-    String[] writablePropertyNames = EMPTY_STRING_ARRAY;
-    Map<String, Invoker> setMethods = new HashMap();
-    Map<String, Invoker> getMethods = new HashMap();
-    Map<String, Class<?>> setTypes = new HashMap();
-    Map<String, Class<?>> getTypes = new HashMap();
-    Map<String, Field> fields = new HashMap();
+    List<String> readablePropertyNames = new ArrayList<String>();
+    List<String> writablePropertyNames = new ArrayList<String>();
+    Map<String, Invoker> setMethods = new LinkedHashMap<String, Invoker>();
+    Map<String, Invoker> getMethods = new LinkedHashMap<String, Invoker>();
+    Map<String, Class<?>> setTypes = new LinkedHashMap<String, Class<?>>();
+    Map<String, Class<?>> getTypes = new LinkedHashMap<String, Class<?>>();
+    Map<String, Field> fields = new LinkedHashMap<String, Field>();
     List<Field> orderFields = new ArrayList();
     Constructor<?> defaultConstructor;
 
@@ -82,11 +80,9 @@ public class DefaultReflector implements Reflector {
     public DefaultReflector(Class<?> clazz) {
         type = clazz;
         addDefaultConstructor(clazz);
+        addFields(clazz);
         addGetMethods(clazz);
         addSetMethods(clazz);
-        addFields(clazz);
-        readablePropertyNames = getMethods.keySet().toArray(new String[getMethods.keySet().size()]);
-        writablePropertyNames = setMethods.keySet().toArray(new String[setMethods.keySet().size()]);
     }
 
     void addDefaultConstructor(Class<?> clazz) {
@@ -110,8 +106,12 @@ public class DefaultReflector implements Reflector {
         }
     }
 
+    /**
+     * 获取Getter方法数组
+     * @param cls
+     */
     void addGetMethods(Class<?> cls) {
-        Map<String, List<Method>> conflictingGetters = new HashMap<String, List<Method>>();
+        Map<String, List<Method>> conflictingGetters = new LinkedHashMap<String, List<Method>>();
         Method[] methods = getClassMethods(cls);
         for (Method method : methods) {
             String name = method.getName();
@@ -162,11 +162,14 @@ public class DefaultReflector implements Reflector {
         if (isValidPropertyName(name)) {
             getMethods.put(name, new MethodInvoker(method));
             getTypes.put(name, method.getReturnType());
+            if (!readablePropertyNames.contains(name)) {
+                readablePropertyNames.add(name);
+            }
         }
     }
 
     void addSetMethods(Class<?> cls) {
-        Map<String, List<Method>> conflictingSetters = new HashMap<String, List<Method>>();
+        Map<String, List<Method>> conflictingSetters = new LinkedHashMap<String, List<Method>>();
         Method[] methods = getClassMethods(cls);
         for (Method method : methods) {
             String name = method.getName();
@@ -234,6 +237,9 @@ public class DefaultReflector implements Reflector {
         if (isValidPropertyName(name)) {
             setMethods.put(name, new MethodInvoker(method));
             setTypes.put(name, method.getParameterTypes()[0]);
+            if (!writablePropertyNames.contains(name)) {
+                writablePropertyNames.add(name);
+            }
         }
     }
 
@@ -252,9 +258,6 @@ public class DefaultReflector implements Reflector {
             }
             if (field.isAccessible()) {
                 if (!setMethods.containsKey(field.getName())) {
-                    // issue #379 - removed the check for final because JDK 1.5 allows
-                    // modification of final fields through reflection4j (JSR-133). (JGB)
-                    // pr #16 - final static can only be set by the classloader
                     int modifiers = field.getModifiers();
                     if (!(Modifier.isFinal(modifiers) && Modifier.isStatic(modifiers))) {
                         addSetField(field);
@@ -277,6 +280,9 @@ public class DefaultReflector implements Reflector {
         if (isValidPropertyName(field.getName())) {
             setMethods.put(field.getName(), new SetFieldInvoker(field));
             setTypes.put(field.getName(), field.getType());
+            if (!writablePropertyNames.contains(field.getName())) {
+                writablePropertyNames.add(field.getName());
+            }
         }
     }
 
@@ -284,6 +290,9 @@ public class DefaultReflector implements Reflector {
         if (isValidPropertyName(field.getName())) {
             getMethods.put(field.getName(), new GetFieldInvoker(field));
             getTypes.put(field.getName(), field.getType());
+            if (!readablePropertyNames.contains(field.getName())) {
+                readablePropertyNames.add(field.getName());
+            }
         }
     }
 
@@ -291,18 +300,21 @@ public class DefaultReflector implements Reflector {
         return !(name.startsWith("$") || "serialVersionUID".equals(name) || "class".equals(name));
     }
 
+    /**
+     * 获取当前类及其父类所有的方法
+     * @param cls
+     * @return
+     */
     Method[] getClassMethods(Class<?> cls) {
-        Map<String, Method> uniqueMethods = new HashMap<String, Method>();
+        Map<String, Method> uniqueMethods = new LinkedHashMap<String, Method>();
         Class<?> currentClass = cls;
         while (currentClass != null) {
             addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
-            // we also need to look for interface methods -
-            // because the class may be abstract
+            //遍历所有接口
             Class<?>[] interfaces = currentClass.getInterfaces();
             for (Class<?> anInterface : interfaces) {
                 addUniqueMethods(uniqueMethods, anInterface.getMethods());
             }
-
             currentClass = currentClass.getSuperclass();
         }
 
@@ -311,8 +323,15 @@ public class DefaultReflector implements Reflector {
         return methods.toArray(new Method[methods.size()]);
     }
 
+    /**
+     * 处理完成后的uniqueMethods中只存放着唯一的方法对象
+     * @param uniqueMethods
+     * @param methods
+     */
     void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
         for (Method currentMethod : methods) {
+            //如果遍历的方法不为桥接方法，则根据方法签字（返回类型#方法名:参数类型1 参数类型n）为唯一键，进行方法的处理
+            //如果子类已经覆盖定义的方法，则使用子类的方法
             if (!currentMethod.isBridge()) {
                 String signature = getSignature(currentMethod);
                 // check to see if the method is already known
@@ -333,6 +352,11 @@ public class DefaultReflector implements Reflector {
         }
     }
 
+    /**
+     * 获取方法签字
+     * @param method
+     * @return
+     */
     String getSignature(Method method) {
         StringBuilder sb = new StringBuilder();
         Class<?> returnType = method.getReturnType();
@@ -417,11 +441,11 @@ public class DefaultReflector implements Reflector {
     }
 
     public Collection getGettablePropertyNames() {
-        return Arrays.asList(readablePropertyNames);
+        return Collections.unmodifiableCollection(readablePropertyNames);
     }
 
     public Collection getSettablePropertyNames() {
-        return Arrays.asList(writablePropertyNames);
+        return Collections.unmodifiableCollection(writablePropertyNames);
     }
 
     public boolean hasSetter(String propertyName) {
