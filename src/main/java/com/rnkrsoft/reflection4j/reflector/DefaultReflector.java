@@ -39,6 +39,9 @@ import com.rnkrsoft.reflection4j.invoker.SetFieldInvoker;
 import com.rnkrsoft.reflection4j.property.PropertyNamer;
 
 import java.lang.reflect.*;
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -46,6 +49,7 @@ import java.util.*;
  */
 public class DefaultReflector implements Reflector {
     static final Set<String> IGNORE_FIELD = new HashSet();
+    static final Set<Class> NOT_SUPPORTED = new HashSet();
 
     Class<?> type;
     List<String> readablePropertyNames = new ArrayList<String>();
@@ -59,30 +63,48 @@ public class DefaultReflector implements Reflector {
     Constructor<?> defaultConstructor;
 
     static {
-        IGNORE_FIELD.add("serialPersistentFields");
         IGNORE_FIELD.add("CASE_INSENSITIVE_ORDER");
-        IGNORE_FIELD.add("bytes");
         IGNORE_FIELD.add("class");
-        IGNORE_FIELD.add("value");
-        IGNORE_FIELD.add("hash");
-        IGNORE_FIELD.add("empty");
         IGNORE_FIELD.add("BYTES");
-        IGNORE_FIELD.add("DigitTens");
-        IGNORE_FIELD.add("DigitOnes");
-        IGNORE_FIELD.add("sizeTable");
         IGNORE_FIELD.add("SIZE");
-        IGNORE_FIELD.add("digits");
         IGNORE_FIELD.add("MAX_VALUE");
         IGNORE_FIELD.add("MIN_VALUE");
         IGNORE_FIELD.add("TYPE");
+
+        NOT_SUPPORTED.add(Class.class);
+        NOT_SUPPORTED.add(Object.class);
+        NOT_SUPPORTED.add(String.class);
+        NOT_SUPPORTED.add(Byte.class);
+        NOT_SUPPORTED.add(Byte.TYPE);
+        NOT_SUPPORTED.add(Boolean.class);
+        NOT_SUPPORTED.add(Boolean.TYPE);
+        NOT_SUPPORTED.add(Short.class);
+        NOT_SUPPORTED.add(Short.TYPE);
+        NOT_SUPPORTED.add(Integer.class);
+        NOT_SUPPORTED.add(Integer.TYPE);
+        NOT_SUPPORTED.add(Long.class);
+        NOT_SUPPORTED.add(Long.TYPE);
+        NOT_SUPPORTED.add(Float.class);
+        NOT_SUPPORTED.add(Float.TYPE);
+        NOT_SUPPORTED.add(Double.class);
+        NOT_SUPPORTED.add(Double.TYPE);
+        NOT_SUPPORTED.add(BigDecimal.class);
+        NOT_SUPPORTED.add(Date.class);
+        NOT_SUPPORTED.add(Time.class);
+        NOT_SUPPORTED.add(java.sql.Date.class);
+        NOT_SUPPORTED.add(java.sql.Date.class);
     }
 
     public DefaultReflector(Class<?> clazz) {
         type = clazz;
-        addDefaultConstructor(clazz);
-        addFields(clazz);
-        addGetMethods(clazz);
-        addSetMethods(clazz);
+        if (NOT_SUPPORTED.contains(clazz)){
+
+        }else {
+            addDefaultConstructor(clazz);
+            addFields(clazz);
+            addGetMethods(clazz);
+            addSetMethods(clazz);
+        }
     }
 
     void addDefaultConstructor(Class<?> clazz) {

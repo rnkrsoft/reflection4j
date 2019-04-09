@@ -18,6 +18,7 @@ public class DefaultReflectorTest {
     static abstract class AbstractEntity implements Entity<Long> {
 
         private Long id;
+        String value;
 
         public Long getId() {
             return id;
@@ -25,6 +26,14 @@ public class DefaultReflectorTest {
 
         public void setId(Long id) {
             this.id = id;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
 
         final String name;
@@ -63,7 +72,9 @@ public class DefaultReflectorTest {
         Reflector reflector = new DefaultReflector(Section.class);
         Assert.assertEquals(Long.class, reflector.getSetterType("id"));
         System.out.println(reflector.getSettablePropertyNames());
-        Assert.assertEquals(3, reflector.getSettablePropertyNames().size());
+        System.out.println(reflector.getGettablePropertyNames());
+        System.out.println(reflector.getFields());
+        Assert.assertEquals(4, reflector.getSettablePropertyNames().size());
 
     }
 
@@ -72,7 +83,8 @@ public class DefaultReflectorTest {
         Reflector reflector = new DefaultReflector(Section.class);
         Assert.assertEquals(Long.class, reflector.getGetterType("id"));
         Assert.assertEquals(String.class, reflector.getGetterType("name"));
-        Assert.assertEquals(3, reflector.getGettablePropertyNames().size());
+        Assert.assertEquals(String.class, reflector.getGetterType("value"));
+        Assert.assertEquals(4, reflector.getGettablePropertyNames().size());
         System.out.println(reflector.getGettablePropertyNames());
     }
 
@@ -80,6 +92,7 @@ public class DefaultReflectorTest {
     public void shouldNotGetClass() throws Exception {
         Reflector reflector = new DefaultReflector(Section.class);
         Assert.assertFalse(reflector.hasGetter("class"));
+        Assert.assertTrue(reflector.hasGetter("value"));
     }
 
     @Test
@@ -97,7 +110,7 @@ public class DefaultReflectorTest {
     @Test
     public void test1() throws Exception {
         Reflector reflector = new DefaultReflector(Section.class);
-        Assert.assertEquals(3, reflector.getFields().size());
+        Assert.assertEquals(4, reflector.getFields().size());
         System.out.println(reflector.getFields());
     }
 
