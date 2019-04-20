@@ -29,7 +29,7 @@
         <junit.version>4.12</junit.version>
         <lombok.version>1.16.10</lombok.version>
         <logtrace4j.version>1.0.1</logtrace4j.version>
-        <groundwork.version>1.0.1</groundwork.version>
+        <groundwork.version>1.0.2</groundwork.version>
     </properties>
     <dependencies>
         <dependency>
