@@ -23,60 +23,67 @@
     <properties>
         <maven.compiler.target>1.6</maven.compiler.target>
         <maven.compiler.source>1.6</maven.compiler.source>
-        <java.version>1.6</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <junit.version>4.12</junit.version>
         <lombok.version>1.16.10</lombok.version>
         <logtrace4j.version>1.0.1</logtrace4j.version>
-        <groundwork.version>1.0.2</groundwork.version>
+        <groundwork.version>1.0.3</groundwork.version>
+        <logger4j.version>1.0.0</logger4j.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.rnkrsoft.groundwork</groupId>
             <artifactId>groundwork</artifactId>
-            <version>${groundwork.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.rnkrsoft.logtrace4j</groupId>
             <artifactId>logtrace4j</artifactId>
-            <version>${logtrace4j.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.rnkrsoft.logger4j</groupId>
             <artifactId>logger4j</artifactId>
-            <version>1.0.0</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.rnkrsoft.groundwork</groupId>
+                <artifactId>groundwork</artifactId>
+                <version>${groundwork.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.rnkrsoft.logtrace4j</groupId>
+                <artifactId>logtrace4j</artifactId>
+                <version>${logtrace4j.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.16</version>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <version>${junit.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>ognl</groupId>
-                <artifactId>ognl</artifactId>
-                <version>3.2</version>
+                <groupId>com.rnkrsoft.logger4j</groupId>
+                <artifactId>logger4j</artifactId>
+                <version>${logger4j.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
