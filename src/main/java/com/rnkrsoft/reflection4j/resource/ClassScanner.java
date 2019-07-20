@@ -235,18 +235,31 @@ public class ClassScanner {
 
     final Collection<Class> classes = new LinkedHashSet();
 
-    public ClassScanner(ClassLoader classLoader, boolean scanSubPackage) {
-        this.classLoader = classLoader;
+    boolean debug;
+
+    public ClassScanner(ClassLoader classLoader, boolean scanSubPackage, boolean debug) {
+        if (classLoader == null){
+            this.classLoader = Thread.currentThread().getContextClassLoader();
+        }else {
+            this.classLoader = classLoader;
+        }
         this.scanSubPackage = scanSubPackage;
+        this.debug = debug;
+    }
+
+    public ClassScanner(ClassLoader classLoader, boolean scanSubPackage) {
+        this(classLoader, scanSubPackage, true);
+    }
+    public ClassScanner(boolean scanSubPackage, boolean debug) {
+        this(Thread.currentThread().getContextClassLoader(), scanSubPackage, debug);
     }
 
     public ClassScanner(boolean scanSubPackage) {
-        this(Thread.currentThread().getContextClassLoader(), scanSubPackage);
+        this(scanSubPackage, true);
     }
 
-
     public ClassScanner() {
-        this(Thread.currentThread().getContextClassLoader(), false);
+        this(Thread.currentThread().getContextClassLoader(), false, true);
     }
 
     public interface Filter {
@@ -360,7 +373,7 @@ public class ClassScanner {
      * @return
      */
     public ClassScanner scan(String _package, Filter filter) {
-        return scan(_package, Thread.currentThread().getContextClassLoader(), filter);
+        return scan(_package, null, filter);
     }
 
     /**
@@ -372,6 +385,10 @@ public class ClassScanner {
      * @return 集合
      */
     public ClassScanner scan(String _package, ClassLoader classLoader, Filter filter) {
+        ClassLoader classLoader1 = this.classLoader;
+        if (classLoader != null){
+            classLoader1 = classLoader;
+        }
         if (_package == null || _package.isEmpty()) {
             throw ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径为空").runtimeException();
         }
@@ -382,7 +399,7 @@ public class ClassScanner {
         String _dir = _package.replace('.', '/');
         Enumeration<URL> dirs;
         try {
-            dirs = classLoader.getResources(_dir);
+            dirs = classLoader1.getResources(_dir);
             while (dirs.hasMoreElements()) {
                 URL url = dirs.nextElement();
                 String protocol = url.getProtocol();
@@ -392,6 +409,8 @@ public class ClassScanner {
                     scanJar(_package, _dir, url, filter);
                 }
             }
+        } catch (NoClassDefFoundError e) {
+            //nothing
         } catch (IOException e) {
             //nothing
         }
@@ -407,7 +426,7 @@ public class ClassScanner {
             while (entries.hasMoreElements()) {
                 JarEntry entry = entries.nextElement();
                 String name = entry.getName();
-                if (log.isDebugEnabled()) {
+                if (debug) {
                     log.debug("scan jar '{}'", name);
                 }
                 // 如果是以/开头的
@@ -432,6 +451,8 @@ public class ClassScanner {
                                     if (filter.accept(clazz)) {
                                         classes.add(clazz);
                                     }
+                                } catch (NoClassDefFoundError e) {
+                                    //nothing
                                 } catch (ClassNotFoundException e) {
                                     //nothing
                                 }
