@@ -1,0 +1,2 @@
+javassist=com.rnkrsoft.reflection4j.extension.compiler.JavassistCompiler
+jdk=com.rnkrsoft.reflection4j.extension.compiler.JdkCompiler

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+    <Properties>
+        <property name="LOGGER">Console</property>
+    </Properties>
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+        </Console>
+    </appenders>
+
+    <loggers>
+        <AsyncRoot level="debug">
+            <appender-ref ref="${LOGGER}"/>
+        </AsyncRoot>
+        <logger name="org.springframework" level="info" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="com.alibaba.dubbo" level="error" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="org.apache.velocity" level="error" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="org.I0Itec.zkclient" level="error" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="org.apache.zookeeper" level="error" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="com.alibaba.dubbo" level="error" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="log4jdbc" level="info" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="jdbc.audit" level="off" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="jdbc.sqlonly" level="off" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="jdbc.sqltiming" level="debug" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="jdbc.connection" level="off" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="jdbc.resultset" level="off" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+        <logger name="jdbc.resultsettable" level="debug" additivity="false">
+            <appender-ref ref="${LOGGER}"/>
+        </logger>
+    </loggers>
+</configuration>

@@ -6,7 +6,7 @@ import com.rnkrsoft.reflection4j.MetaObject;
 import org.junit.Test;
 
 /**
- * Created by woate on 2018/10/20.
+ * Created by rnkrsoft.com on 2018/10/20.
  */
 public class MetadataTest {
     @Test

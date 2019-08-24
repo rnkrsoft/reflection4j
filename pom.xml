@@ -52,9 +52,18 @@
             <groupId>com.rnkrsoft.logger4j</groupId>
             <artifactId>logger4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.15.0-GA</version>
+            </dependency>
             <dependency>
                 <groupId>com.rnkrsoft.groundwork</groupId>
                 <artifactId>groundwork</artifactId>
