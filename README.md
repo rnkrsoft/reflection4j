@@ -90,6 +90,7 @@ en=com.rnkrsoft.reflection4j.extension.EnDemoService
 
 
 通过以上代码实现按需加载拓展点实现。
+可参照https://www.cnblogs.com/Non-Tecnology/p/6882903.html
 
 
 
