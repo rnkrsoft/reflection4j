@@ -213,6 +213,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+import com.rnkrsoft.reflection4j.extension.Extension;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
@@ -220,6 +221,7 @@ import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
 import javassist.LoaderClassPath;
 
+@Extension("javassist")
 public class JavassistCompiler extends AbstractCompiler {
 
     private static final Pattern IMPORT_PATTERN = Pattern.compile("import\\s+([\\w\\.\\*]+);\n");

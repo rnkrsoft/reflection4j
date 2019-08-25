@@ -1,4 +1,4 @@
-cn=com.rnkrsoft.reflection4j.extension.CnDemoService
-en=com.rnkrsoft.reflection4j.extension.EnDemoService
-x2=com.rnkrsoft.reflection4j.extension.Wrapper2DemoService
-x1=com.rnkrsoft.reflection4j.extension.Wrapper1DemoService
+com.rnkrsoft.reflection4j.extension.CnDemoService
+com.rnkrsoft.reflection4j.extension.EnDemoService
+com.rnkrsoft.reflection4j.extension.Wrapper2DemoService
+com.rnkrsoft.reflection4j.extension.Wrapper1DemoService

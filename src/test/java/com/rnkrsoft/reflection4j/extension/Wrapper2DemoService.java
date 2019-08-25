@@ -3,6 +3,7 @@ package com.rnkrsoft.reflection4j.extension;
 /**
  * Created by rnkrsoft.com on 2019/8/24.
  */
+@Extension("x2")
 @Wrapper(priority = 2)
 public class Wrapper2DemoService implements DemoService{
     DemoService instance;

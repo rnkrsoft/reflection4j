@@ -204,6 +204,8 @@
  */
 package com.rnkrsoft.reflection4j.extension.compiler;
 
+import com.rnkrsoft.reflection4j.extension.Extension;
+
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -232,7 +234,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
-
+@Extension("jdk")
 public class JdkCompiler extends AbstractCompiler {
 
     private final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
