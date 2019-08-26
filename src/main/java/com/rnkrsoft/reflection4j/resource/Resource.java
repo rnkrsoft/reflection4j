@@ -205,36 +205,117 @@ package com.rnkrsoft.reflection4j.resource;
 
 
 import com.rnkrsoft.logtrace4j.ErrorContextFactory;
-import static com.rnkrsoft.utils.StringUtils.*;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+
+import static com.rnkrsoft.utils.StringUtils.convertPackageToPath;
+import static com.rnkrsoft.utils.StringUtils.deleteClassPath;
+import static com.rnkrsoft.utils.StringUtils.deleteClassPathStar;
 
 
 /**
  * Created by rnkrsoft on 2017/12/2.
+ * 资源对象，用于访问系统资源文件
  */
-public class Resource {
+public abstract class Resource {
 
-    public URL getFile(ClassLoader classLoader, String src) {
-        if (classLoader == null) {
-            classLoader = Thread.currentThread().getContextClassLoader();
+    public static final String CLASS_PATH_STAR = "classpath*:";
+    public static final String CLASS_PATH = "classpath:";
+
+    protected Resource(){
+
+    }
+    /**
+     * 通过资源路径进行访问，形如 classpath*:com.rnkrsoft.demo.txt
+     *
+     * @param src 形如 classpath*:com.rnkrsoft.demo.txt
+     * @return
+     * @throws IOException
+     */
+    public static List<URL> getFiles(String src) throws IOException {
+        ClassLoader classLoader = Resource.class.getClassLoader();
+        return getFiles(classLoader, src);
+    }
+
+    /**
+     * 通过资源路径进行访问，形如 classpath*:com.rnkrsoft.demo.txt
+     *
+     * @param src 形如 classpath*:com.rnkrsoft.demo.txt
+     * @return
+     * @throws IOException
+     */
+    public static List<URL> getFiles(ClassLoader classLoader, String src) throws IOException {
+        if (!src.startsWith(CLASS_PATH_STAR)) {
+            throw ErrorContextFactory.instance().message("文件'{}'不是有效的classpath*:资源访问", src).runtimeException();
         }
-        if (!src.startsWith("classpath*:")) {
-            throw ErrorContextFactory.instance().message("文件'{}'不是有效的classpath*资源访问", src).runtimeException();
-        }
+
+        //将文件协议前缀去掉
         String temp = deleteClassPathStar(src);
+        //将包路径转换为文件路径
         String file = convertPackageToPath(temp);
-        URL url = classLoader.getResource(file);
+        Enumeration<URL> urls = null;
+        if (classLoader != null) {
+            urls = classLoader.getResources(file);
+        } else {
+            urls = ClassLoader.getSystemResources(file);
+        }
+        if (urls == null) {
+            throw ErrorContextFactory.instance().message("文件'{}'不存在", src).runtimeException();
+        }
+        List<URL> urlList = Collections.list(urls);
+        if (urlList.isEmpty()) {
+            throw ErrorContextFactory.instance().message("文件'{}'不存在", src).runtimeException();
+        }
+        return urlList;
+    }
+
+    /**
+     * 通过资源路径进行访问，形如 classpath:com.rnkrsoft.demo.txt
+     *
+     * @param src 形如 classpath:com.rnkrsoft.demo.txt
+     * @return
+     * @throws IOException
+     */
+    public static URL getFile(String src) throws IOException {
+        ClassLoader classLoader = Resource.class.getClassLoader();
+        return getFile(classLoader, src);
+    }
+
+    /**
+     * 通过资源路径进行访问，形如 classpath:com.rnkrsoft.demo.txt
+     *
+     * @param classLoader 类加载器
+     * @param src         形如 classpath:com.rnkrsoft.demo.txt
+     * @return
+     * @throws IOException
+     */
+    public static URL getFile(ClassLoader classLoader, String src) throws IOException {
+        if (!src.startsWith(CLASS_PATH)) {
+            throw ErrorContextFactory.instance().message("文件'{}'不是有效的classpath:资源访问", src).runtimeException();
+        }
+        //将文件协议前缀去掉
+        String temp = deleteClassPath(src);
+        //将包路径转换为文件路径
+        String file = convertPackageToPath(temp);
+        URL url = null;
+        if (classLoader != null) {
+            url = classLoader.getResource(file);
+        } else {
+            url = ClassLoader.getSystemResource(file);
+        }
         if (url == null) {
             throw ErrorContextFactory.instance().message("文件'{}'不存在", src).runtimeException();
         }
         return url;
     }
 
-    public byte[] readFileToByteArray(ClassLoader classLoader, String src) throws IOException {
+    public static byte[] readFileToByteArray(ClassLoader classLoader, String src) throws IOException {
         InputStream is = getFile(classLoader, src).openStream();
         try {
             byte[] data = readFully(is, is.available());
@@ -244,15 +325,15 @@ public class Resource {
         }
     }
 
-    public String readFileToString(ClassLoader classLoader, String src, String encoding) throws IOException {
+    public static String readFileToString(ClassLoader classLoader, String src, String encoding) throws IOException {
         return new String(readFileToByteArray(classLoader, src), encoding);
     }
 
-    public String readFileToString(String src, String encoding) throws IOException {
-        return new String(readFileToByteArray(Thread.currentThread().getContextClassLoader(), src), encoding);
+    public static String readFileToString(String src, String encoding) throws IOException {
+        return new String(readFileToByteArray(Resource.class.getClassLoader(), src), encoding);
     }
 
-    byte[] readFully(InputStream is, int count) throws IOException {
+    static byte[] readFully(InputStream is, int count) throws IOException {
         byte[] data = new byte[count];
         is.read(data);
         return data;

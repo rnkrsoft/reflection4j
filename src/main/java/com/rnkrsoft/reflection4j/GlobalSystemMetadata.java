@@ -204,9 +204,9 @@
  */
 package com.rnkrsoft.reflection4j;
 
+import com.rnkrsoft.lang.nil;
 import com.rnkrsoft.reflection4j.factory.*;
 import com.rnkrsoft.reflection4j.registry.DefaultTypeAliasRegistry;
-import com.rnkrsoft.reflection4j.wrapper.NullObject;
 
 /**
  * 全局系统元信息
@@ -218,7 +218,6 @@ public abstract class GlobalSystemMetadata {
     public static final TypeAliasRegistry TYPE_ALIAS_REGISTRY = new DefaultTypeAliasRegistry();
     public static final MetaClassFactory META_CLASS_FACTORY = new MetaClassFactory(REFLECTOR_FACTORY);
     public static final MetaObjectFactory META_OBJECT_FACTORY = new MetaObjectFactory(OBJECT_FACTORY, OBJECT_WRAPPER_FACTORY, REFLECTOR_FACTORY, META_CLASS_FACTORY);
-    public static final MetaClass NULL_META_CLASS = META_CLASS_FACTORY.forClass(NullObject.class);
 
     private GlobalSystemMetadata() {
         // Prevent Instantiation of Static Class
