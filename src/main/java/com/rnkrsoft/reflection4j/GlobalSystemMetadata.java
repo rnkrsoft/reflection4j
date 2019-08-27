@@ -204,7 +204,6 @@
  */
 package com.rnkrsoft.reflection4j;
 
-import com.rnkrsoft.lang.nil;
 import com.rnkrsoft.reflection4j.factory.*;
 import com.rnkrsoft.reflection4j.registry.DefaultTypeAliasRegistry;
 

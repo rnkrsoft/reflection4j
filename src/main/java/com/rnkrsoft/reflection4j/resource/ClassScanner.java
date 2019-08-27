@@ -204,6 +204,7 @@
  */
 package com.rnkrsoft.reflection4j.resource;
 
+import com.rnkrsoft.logtrace4j.ErrorContext;
 import com.rnkrsoft.logtrace4j.ErrorContextFactory;
 import lombok.extern.slf4j.Slf4j;
 
@@ -227,6 +228,10 @@ import java.util.jar.JarFile;
  */
 @Slf4j
 public class ClassScanner {
+    public static final String DOT_CLASS = ".class";
+    public static final String CLASS = "class";
+    public static final char DOT_CHAR = '.';
+    public static final char SLASH_CHAR = '/';
     ClassLoader classLoader;
     /**
      * 是否扫描子包
@@ -248,7 +253,7 @@ public class ClassScanner {
     }
 
     public ClassScanner(ClassLoader classLoader, boolean scanSubPackage) {
-        this(classLoader, scanSubPackage, true);
+        this(classLoader, scanSubPackage, log.isDebugEnabled());
     }
     public ClassScanner(boolean scanSubPackage, boolean debug) {
         this(Thread.currentThread().getContextClassLoader(), scanSubPackage, debug);
@@ -259,7 +264,7 @@ public class ClassScanner {
     }
 
     public ClassScanner() {
-        this(Thread.currentThread().getContextClassLoader(), false, true);
+        this(Thread.currentThread().getContextClassLoader(), false, log.isDebugEnabled());
     }
 
     public interface Filter {
@@ -389,14 +394,15 @@ public class ClassScanner {
         if (classLoader != null){
             classLoader1 = classLoader;
         }
+        ErrorContext errorContext = ErrorContextFactory.instance().activity("scan jar file in package '{}'", _package);
         if (_package == null || _package.isEmpty()) {
-            throw ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径为空").runtimeException();
+            throw errorContext.message("package is null").runtimeException();
         }
-        if (_package.indexOf("/") != -1) {
-            throw ErrorContextFactory.instance().activity("扫描包路径").message("输入的包路径'{}'不能包含/", _package).runtimeException();
+        if (_package.indexOf(SLASH_CHAR) != -1) {
+            throw errorContext.message("package '{}' is not contains \"/\"!", _package).runtimeException();
         }
 
-        String _dir = _package.replace('.', '/');
+        String _dir = _package.replace(DOT_CHAR, SLASH_CHAR);
         Enumeration<URL> dirs;
         try {
             dirs = classLoader1.getResources(_dir);
@@ -418,7 +424,7 @@ public class ClassScanner {
     }
 
     void scanJar(String _package, String _dir, URL url, Filter filter) {
-        ErrorContextFactory.instance().activity("扫描JAR文件'{}'", url);
+        ErrorContextFactory.instance().activity("scan jar file '{}'", url);
         JarFile jar;
         try {
             jar = ((JarURLConnection) url.openConnection()).getJarFile();
@@ -430,24 +436,24 @@ public class ClassScanner {
                     log.debug("scan jar '{}'", name);
                 }
                 // 如果是以/开头的
-                if (name.charAt(0) == '/') {
+                if (name.charAt(0) == SLASH_CHAR) {
                     name = name.substring(1);
                 }
                 if (entry.isDirectory()) {
                     continue;
                 } else {
                     try {
-                        int _path0_idx = name.lastIndexOf('/');
+                        int _path0_idx = name.lastIndexOf(SLASH_CHAR);
                         String _path0 = _path0_idx > -1 ? name.substring(0, _path0_idx) : "";
                         String _fileName0 = _path0_idx > -1 ? name.substring(_path0_idx + 1) : name;
                         int _fileName0_idx = name.lastIndexOf('.');
                         String _className0 = _fileName0_idx > -1 ? name.substring(_path0_idx + 1, _fileName0_idx) : _fileName0;
                         String _fileSuffix0 = _fileName0_idx > -1 ? name.substring(_fileName0_idx + 1) : "";
-                        if (_fileSuffix0.equals("class")) {
+                        if (_fileSuffix0.equals(CLASS)) {
                             if (scanSubPackage ? _path0.startsWith(_dir) : _path0.equals(_dir)) {
-                                String _package0 = _path0.replace('/', '.');
+                                String _package0 = _path0.replace(SLASH_CHAR, DOT_CHAR);
                                 try {
-                                    Class clazz = Class.forName(_package0 + '.' + _className0, true, this.classLoader);
+                                    Class clazz = Class.forName(_package0 + DOT_CHAR + _className0, true, this.classLoader);
                                     if (filter.accept(clazz)) {
                                         classes.add(clazz);
                                     }
@@ -459,7 +465,7 @@ public class ClassScanner {
                             }
                         }
                     } catch (Exception e) {
-                        throw new Exception("处理" + name + "发生错误", e);
+                        throw new Exception("process \"" + name + "\" happens error!", e.getCause());
                     }
                 }
 
@@ -467,7 +473,7 @@ public class ClassScanner {
             }
         } catch (Exception e) {
             throw ErrorContextFactory.instance()
-                    .message("扫描JAR文件'{}'发生错误", url)
+                    .message("scan jar file '{}' happens error!", url)
                     .cause(e)
                     .runtimeException();
         }
@@ -482,18 +488,18 @@ public class ClassScanner {
         }
         File[] files = dir.listFiles(new FileFilter() {
             public boolean accept(File file) {
-                return file.isDirectory() || file.getName().endsWith(".class");
+                return file.isDirectory() || file.getName().endsWith(DOT_CLASS);
             }
         });
         for (File file : files) {
             if (file.isDirectory()) {
                 if (scanSubPackage) {
-                    scanFile(_package + "." + file.getName(), _dir + "/" + file.getName(), file.toURI().toURL(), filter);
+                    scanFile(_package + DOT_CHAR + file.getName(), _dir + SLASH_CHAR + file.getName(), file.toURI().toURL(), filter);
                 }
             } else {
                 String className = file.getName().substring(0, file.getName().length() - 6);
                 try {
-                    String className0 = _package + '.' + className;
+                    String className0 = _package + DOT_CHAR + className;
                     Class clazz = this.classLoader.loadClass(className0);
                     if (filter.accept(clazz)) {
                         classes.add(clazz);

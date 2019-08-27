@@ -252,7 +252,7 @@ public abstract class Resource {
      */
     public static List<URL> getFiles(ClassLoader classLoader, String src) throws IOException {
         if (!src.startsWith(CLASS_PATH_STAR)) {
-            throw ErrorContextFactory.instance().message("文件'{}'不是有效的classpath*:资源访问", src).runtimeException();
+            throw ErrorContextFactory.instance().message("file '{}' is illegal classpath*: path!", src).runtimeException();
         }
 
         //将文件协议前缀去掉
@@ -266,11 +266,11 @@ public abstract class Resource {
             urls = ClassLoader.getSystemResources(file);
         }
         if (urls == null) {
-            throw ErrorContextFactory.instance().message("文件'{}'不存在", src).runtimeException();
+            throw ErrorContextFactory.instance().message("file '{}' is not exist!", src).runtimeException();
         }
         List<URL> urlList = Collections.list(urls);
         if (urlList.isEmpty()) {
-            throw ErrorContextFactory.instance().message("文件'{}'不存在", src).runtimeException();
+            throw ErrorContextFactory.instance().message("file '{}' is not exist!", src).runtimeException();
         }
         return urlList;
     }
@@ -297,7 +297,7 @@ public abstract class Resource {
      */
     public static URL getFile(ClassLoader classLoader, String src) throws IOException {
         if (!src.startsWith(CLASS_PATH)) {
-            throw ErrorContextFactory.instance().message("文件'{}'不是有效的classpath:资源访问", src).runtimeException();
+            throw ErrorContextFactory.instance().message("file '{}' is illegal classpath: path!", src).runtimeException();
         }
         //将文件协议前缀去掉
         String temp = deleteClassPath(src);
@@ -310,7 +310,7 @@ public abstract class Resource {
             url = ClassLoader.getSystemResource(file);
         }
         if (url == null) {
-            throw ErrorContextFactory.instance().message("文件'{}'不存在", src).runtimeException();
+            throw ErrorContextFactory.instance().message("file '{}' is not exist!", src).runtimeException();
         }
         return url;
     }
