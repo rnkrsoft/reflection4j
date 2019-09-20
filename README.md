@@ -1,15 +1,20 @@
 # reflection4j
-一个用于反射调用Java对象的工具包，提取自mybatis
+一个用于反射调用Java对象的工具包，提取自mybatis,并进改造
 1.提供对某一个类或者对象的包装，可返回某一方法的执行器，并能够执行
 2.提供包路径下类的扫描
 3.提供包路径下资源的加载
 4.提供类的别名管理
 5.拓展点加载器，提取自dubbo,同时根据实际需要进行了改造
 
-![reflection4j](reflection4j.svg)
-
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.rnkrsoft.reflection4j/reflection4j/badge.svg)](http://search.maven.org/#search|ga|1|g%3A%22com.rnkrsoft.reflection4j%22%20AND%20a%3A%22reflection4j%22)
 
+```xml
+<dependency>
+     <groupId>com.rnkrsoft.reflection4j</groupId>
+        <artifactId>reflection4j</artifactId>
+        <version>最新版本号</version>
+</dependency>
+```
 
 # 拓展点加载器
 提取自dubbo,保留懒加载实例化和包装实现，去除@Activate和@Adaptive。增加@Wrapper注解，对包装实例进行排序定义
